@@ -6,6 +6,10 @@ class Device {
         this.toString = () => {
             return `${this.Name} - ${this.Type}`;
         };
+        this.ToDisplayArray = () => {
+            const battery = isNaN(this.Battery) ? "" : (this.Battery) * 100 + "%";
+            return [this.Name || "", this.Type || "", battery];
+        };
     }
 }
 exports.Device = Device;
@@ -21,8 +25,10 @@ exports.devicesAsync = (options) => {
                 const d = new Device();
                 d.Name = device.name;
                 d.Type = device.model_name;
+                d.Battery = device.last_reading.battery;
                 devices.push(d);
             });
+            devices.sort();
             resolve(devices);
         });
     });
