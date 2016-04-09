@@ -1,5 +1,16 @@
 "use strict";
 
+const emitter = require("events"),
+      util    = require("util");
+
+function LogEmitter() {
+    emitter.call(this);
+}
+
+util.inherits(LogEmitter, emitter);
+
+export const logEmitter = new LogEmitter();
+
 export enum LogLevel {
     Info,
     Warn,
@@ -18,7 +29,7 @@ class Logger implements ILog {
     public Error(message: string) { this.log(LogLevel.Error, message); }
     
     private log(level: LogLevel, message: string) {
-        console.log(`${(new Date).toISOString()} - ${LogLevel[level]} - ${message}`);
+        logEmitter.emit("log",`${(new Date).toISOString()} - ${LogLevel[level]} - ${message}`);
     }
 }
 

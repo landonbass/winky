@@ -7,6 +7,11 @@ import * as Devices from "./devices";
 import * as Robots  from "./robots";
 import * as UI      from "./ui";
 
+// bootstrap console output until ui is provisioned
+const consoleLogger = (message) => {
+    console.log(message);
+};
+Logger.logEmitter.addListener("log", consoleLogger);
 
 async function init() {
     Logger.Log.Info("starting process");
@@ -18,6 +23,7 @@ async function init() {
     const robots     : Array<Robots.Robot> = await Robots.robotsAsync(authTokens);
 
     UI.Setup(devices, robots);
+    
     return 1;
 };
 

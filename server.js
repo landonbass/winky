@@ -13,6 +13,11 @@ const Auth = require("./auth");
 const Devices = require("./devices");
 const Robots = require("./robots");
 const UI = require("./ui");
+// bootstrap console output until ui is provisioned
+const consoleLogger = (message) => {
+    console.log(message);
+};
+Logger.logEmitter.addListener("log", consoleLogger);
 function init() {
     return __awaiter(this, void 0, void 0, function* () {
         Logger.Log.Info("starting process");
