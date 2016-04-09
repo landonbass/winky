@@ -7,21 +7,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
+const Logger = require("./log");
+const Config = require("./config");
 const Auth = require("./auth");
-const Device = require("./devices");
-const options = {
-    apiUrl: "https://api.wink.com/oauth2/token",
-    userName: "",
-    password: "",
-    clientId: "quirky_wink_android_app",
-    clientSecret: "e749124ad386a5a35c0ab554a4f2c045",
-};
+const Devices = require("./devices");
 function init() {
     return __awaiter(this, void 0, void 0, function* () {
-        const authOptions = { ApiUrl: options.apiUrl, UserName: options.userName, Password: options.password, ClientId: options.clientId, ClientSecret: options.clientSecret };
+        Logger.Log.Info("starting process");
+        const authOptions = { ApiUrl: Config.data.ApiUrl, UserName: Config.data.UserName, Password: Config.data.Password, ClientId: Config.data.ClientId, ClientSecret: Config.data.ClientSecret };
         const authTokens = yield Auth.authenticateAync(authOptions);
-        const devices = yield Device.devicesAsync(authTokens);
-        console.log(devices);
+        const devices = yield Devices.devicesAsync(authTokens);
+        devices.forEach((device) => {
+            Logger.Log.Info(device.toString());
+        });
         return 1;
     });
 }

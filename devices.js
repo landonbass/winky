@@ -1,6 +1,14 @@
 "use strict";
 const Request = require("request");
 ;
+class Device {
+    constructor() {
+        this.toString = () => {
+            return `${this.Name} - ${this.Type}`;
+        };
+    }
+}
+exports.Device = Device;
 exports.devicesAsync = (options) => {
     return new Promise((resolve, _) => {
         Request({
@@ -10,7 +18,10 @@ exports.devicesAsync = (options) => {
         }, (error, response, body) => {
             let devices = Array();
             JSON.parse(body).data.forEach((device) => {
-                devices.push({ Name: device.name, Type: device.model_name });
+                const d = new Device();
+                d.Name = device.name;
+                d.Type = device.model_name;
+                devices.push(d);
             });
             resolve(devices);
         });

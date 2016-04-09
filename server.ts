@@ -1,27 +1,20 @@
 "use strict";
 
-/// <reference path="typings/node/node.d.ts" />
-/// <reference path="typings/main/definitions/request.d.ts" />
-/// <reference path='node_modules/promise-ts/promise-ts.d.ts'/>
-
-import * as Request from "request";
-import * as Auth from "./auth";
-import * as Device from "./devices"
-
-const
-    options = {
-        apiUrl       : "https://api.wink.com/oauth2/token",
-        userName     : "",
-        password     : "",
-        clientId     : "quirky_wink_android_app",
-        clientSecret : "e749124ad386a5a35c0ab554a4f2c045",
-    };
+import * as Logger  from "./log";
+import * as Config  from "./config";
+import * as Auth    from "./auth";
+import * as Devices from "./devices";
 
 async function init() {
-    const authOptions: Auth.IAuthOptions = {ApiUrl: options.apiUrl, UserName: options.userName, Password: options.password, ClientId: options.clientId, ClientSecret: options.clientSecret };
+    Logger.Log.Info("starting process");
+    const authOptions: Auth.IAuthOptions = {ApiUrl: Config.data.ApiUrl, UserName: Config.data.UserName, Password: Config.data.Password, ClientId: Config.data.ClientId, ClientSecret: Config.data.ClientSecret };
+    
     const authTokens : Auth.IAuthResult  = await Auth.authenticateAync(authOptions);
-    const devices    : Array<Device.IDevice>  = await Device.devicesAsync(authTokens);
-    console.log(devices);
+    const devices    : Array<Devices.Device>  = await Devices.devicesAsync(authTokens);
+
+    devices.forEach((device) => {
+        Logger.Log.Info(device.toString());
+    });
     
     return 1;
 };
