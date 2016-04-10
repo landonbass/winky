@@ -1,8 +1,10 @@
 "use strict";
 
+import * as Async   from "async";
 import * as Blessed from "blessed";
 import * as Contrib from "blessed-contrib";
 
+import * as Auth    from "./auth";
 import * as Logger  from "./log";
 import * as Devices from "./devices";
 import * as Robots  from "./robots";
@@ -11,7 +13,7 @@ export interface IDisplayFormatter {
     ToDisplayArray() : Array<string>;
 }
 
-export function Setup(devices: Array<Devices.Device>, robots: Array<Robots.Robot>) {
+export function Setup(authTokens: Auth.IAuthResult, devices: Array<Devices.Device>, robots: Array<Robots.Robot>) {
      const screen = Blessed.screen();
      const grid = new Contrib.grid({rows: 12, cols: 12, screen: screen});
      const deviceTable = grid.set(0, 0, 8, 8, Contrib.table,  { 
@@ -21,8 +23,6 @@ export function Setup(devices: Array<Devices.Device>, robots: Array<Robots.Robot
         , selectedBg: "blue"
         , interactive: true
         , label: "Devices - 'd' to focus"
-       // , width: "80%"
-      //  , height: "80%"
         , border: {type: "line", fg: "cyan"}
         , columnSpacing: 10
         , columnWidth: [40, 40, 7]
@@ -34,8 +34,6 @@ export function Setup(devices: Array<Devices.Device>, robots: Array<Robots.Robot
         , selectedBg: "blue"
         , interactive: true
         , label: "Robots - 'r' to focus"
-      //  , width: "20%"
-      //  , height: "80%"
         , border: {type: "line", fg: "cyan"}
         , columnSpacing: 10
         , columnWidth: [40, 40]
@@ -50,23 +48,7 @@ export function Setup(devices: Array<Devices.Device>, robots: Array<Robots.Robot
    };
    
    Logger.logEmitter.addListener("log", uiLogger);
-   // TODO remove thise Logger.logEmitter.removeListerner("log", "consoleLogger");
-   
-   const deviceData = [];
-   devices.forEach((device) => {
-      Logger.Log.Info("loading device " + device.Name);
-      deviceData.push(device.ToDisplayArray());
-   });
-   deviceTable.focus();
-   deviceTable.setData({headers: ["Name", "Type", "Battery"], data: deviceData});
-   
-   const robotData = [];
-   robots.forEach((robot) => {
-       Logger.Log.Info("loading robot " + robot.Name);
-      robotData.push(robot.ToDisplayArray()); 
-   });
-   robotTable.setData({headers: ["Name", "Status"], data: robotData});
-   
+  
    screen.key(["C-c", "escape", "q"], function(ch, key) {
      return process.exit(0);
    });
@@ -77,6 +59,49 @@ export function Setup(devices: Array<Devices.Device>, robots: Array<Robots.Robot
    screen.key(["d", "D"], function(ch, key) {
      deviceTable.focus();
    });
-   screen.render();
+   screen.key(["y", "Y"], function(ch, key) {
+     RefreshData(authTokens).then( (data) => {
+       DrawUi(data);
+     });
+   });
+   
+   
+   const DrawUi = (data) => {
+        const deviceData = [];
+        data[0].forEach((device) => {
+            deviceData.push(device.ToDisplayArray());
+        });
+        deviceTable.setData({headers: ["Name", "Type", "Battery"], data: deviceData});
+        const robotData = [];
+        data[1].forEach((robot) => {
+            robotData.push(robot.ToDisplayArray());
+        });
+        robotTable.setData({headers: ["Name", "Status"], data: robotData});
+        screen.render();
+   };
+   RefreshData(authTokens).then((data) => {
+       DrawUi(data);
+   });
+    
+    
 
 }
+
+const RefreshData = (authTokens: Auth.IAuthResult) => {
+    return new Promise<[Array<Devices.Device>, Array<Robots.Robot>]>( (resolve, _) => {
+        Async.parallel([
+            async (cb) => {
+                Devices.devicesAsync(authTokens).then((devices) => {
+                    cb(null, devices);
+                });
+            },
+            async (cb) => {
+                Robots.robotsAsync(authTokens).then((robots) => {
+                cb(null, robots);
+                });
+            }
+        ], (err, results) => {
+        resolve([results[0], results[1]]);
+        });
+    });
+};

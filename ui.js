@@ -1,8 +1,19 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments)).next());
+    });
+};
+const Async = require("async");
 const Blessed = require("blessed");
 const Contrib = require("blessed-contrib");
 const Logger = require("./log");
-function Setup(devices, robots) {
+const Devices = require("./devices");
+const Robots = require("./robots");
+function Setup(authTokens, devices, robots) {
     const screen = Blessed.screen();
     const grid = new Contrib.grid({ rows: 12, cols: 12, screen: screen });
     const deviceTable = grid.set(0, 0, 8, 8, Contrib.table, {
@@ -34,20 +45,6 @@ function Setup(devices, robots) {
         log.log(message);
     };
     Logger.logEmitter.addListener("log", uiLogger);
-    // TODO remove thise Logger.logEmitter.removeListerner("log", "consoleLogger");
-    const deviceData = [];
-    devices.forEach((device) => {
-        Logger.Log.Info("loading device " + device.Name);
-        deviceData.push(device.ToDisplayArray());
-    });
-    deviceTable.focus();
-    deviceTable.setData({ headers: ["Name", "Type", "Battery"], data: deviceData });
-    const robotData = [];
-    robots.forEach((robot) => {
-        Logger.Log.Info("loading robot " + robot.Name);
-        robotData.push(robot.ToDisplayArray());
-    });
-    robotTable.setData({ headers: ["Name", "Status"], data: robotData });
     screen.key(["C-c", "escape", "q"], function (ch, key) {
         return process.exit(0);
     });
@@ -57,7 +54,45 @@ function Setup(devices, robots) {
     screen.key(["d", "D"], function (ch, key) {
         deviceTable.focus();
     });
-    screen.render();
+    screen.key(["y", "Y"], function (ch, key) {
+        RefreshData(authTokens).then((data) => {
+            DrawUi(data);
+        });
+    });
+    const DrawUi = (data) => {
+        const deviceData = [];
+        data[0].forEach((device) => {
+            deviceData.push(device.ToDisplayArray());
+        });
+        deviceTable.setData({ headers: ["Name", "Type", "Battery"], data: deviceData });
+        const robotData = [];
+        data[1].forEach((robot) => {
+            robotData.push(robot.ToDisplayArray());
+        });
+        robotTable.setData({ headers: ["Name", "Status"], data: robotData });
+        screen.render();
+    };
+    RefreshData(authTokens).then((data) => {
+        DrawUi(data);
+    });
 }
 exports.Setup = Setup;
+const RefreshData = (authTokens) => {
+    return new Promise((resolve, _) => {
+        Async.parallel([
+                (cb) => __awaiter(this, void 0, void 0, function* () {
+                Devices.devicesAsync(authTokens).then((devices) => {
+                    cb(null, devices);
+                });
+            }),
+                (cb) => __awaiter(this, void 0, void 0, function* () {
+                Robots.robotsAsync(authTokens).then((robots) => {
+                    cb(null, robots);
+                });
+            })
+        ], (err, results) => {
+            resolve([results[0], results[1]]);
+        });
+    });
+};
 //# sourceMappingURL=ui.js.map
