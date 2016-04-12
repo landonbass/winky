@@ -1,5 +1,5 @@
 "use strict";
-const Request = require("request");
+const Api = require("./api");
 ;
 class Device {
     constructor() {
@@ -13,24 +13,14 @@ class Device {
     }
 }
 exports.Device = Device;
+exports.DeviceConverter = function (json) {
+    const d = new Device();
+    d.Name = json.name;
+    d.Type = json.model_name;
+    d.Battery = json.last_reading.battery;
+    return d;
+};
 exports.devicesAsync = (options) => {
-    return new Promise((resolve, _) => {
-        Request({
-            method: "GET",
-            url: "https://api.wink.com/users/me/wink_devices",
-            headers: { "Content-Type": "application/json", "Authorization": "Bearer " + options.AccessToken }
-        }, (error, response, body) => {
-            let devices = Array();
-            JSON.parse(body).data.forEach((device) => {
-                const d = new Device();
-                d.Name = device.name;
-                d.Type = device.model_name;
-                d.Battery = device.last_reading.battery;
-                devices.push(d);
-            });
-            devices.sort();
-            resolve(devices);
-        });
-    });
+    return Api.getDataAsync(exports.DeviceConverter, "https://api.wink.com/users/me/wink_devices", "GET", { "Content-Type": "application/json", "Authorization": "Bearer " + options.AccessToken });
 };
 //# sourceMappingURL=devices.js.map
