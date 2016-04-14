@@ -16,18 +16,30 @@ export interface IConvertible <TResult> {
     (json: any): TResult;
 }
 
-export function getDataAsync<TResult> (converter: IConvertible<TResult>, url: string, method: string, headers: {}): Promise<Array<TResult>> {
+const createOptionObject = (url: string, method: string, headers: {}, body: {}) => {
+  let result = {url: url, method: method};
+  if (headers !== "") result["headers"] = headers;
+  if (body !== "") result["body"] = body;
+  return result;
+};
+
+export function getDataAsync<TResult> (converter: IConvertible<TResult>, url: string, method: string, headers: {}, body: {}): Promise<Array<TResult>> {
     return new Promise<Array<TResult>> ((resolve, _) => {
-        Request({
-            method: method,
-            url:    url,
-            headers: headers
-        }, (error, response, body) => {
+        Request(createOptionObject(url, method, headers, body), (error, response, body) => {
             let results = new Array<TResult>();
             JSON.parse(body).data.forEach((item) => {
                 results.push(converter(item));
             });
             resolve(results);
+        });
+    });
+};
+
+export function getDataAsyncSingle<TResult> (converter: IConvertible<TResult>, url: string, method: string, headers: {}, body: {}): Promise<TResult> {
+    return new Promise<TResult> ((resolve, _) => {
+        Request(createOptionObject(url, method, headers, body), (error, response, body) => {
+            let result : TResult = converter(JSON.parse(body).data);
+            resolve(result);
         });
     });
 };

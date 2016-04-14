@@ -1,6 +1,5 @@
 "use strict";
 
-import * as Async   from "async";
 import * as Logger  from "./log";
 import * as Config  from "./config";
 import * as Auth    from "./auth";
@@ -20,26 +19,7 @@ async function init() {
     const authOptions: Auth.IAuthOptions = {ApiUrl: Config.data.ApiUrl, UserName: Config.data.UserName, Password: Config.data.Password, ClientId: Config.data.ClientId, ClientSecret: Config.data.ClientSecret };
     const authTokens : Auth.IAuthResult  = await Auth.authenticateAync(authOptions);
     Logger.Log.Info("access token received: " + authTokens.AccessToken);
-    
-    Async.parallel([
-        async (cb) => {
-            Devices.devicesAsync(authTokens).then((devices) => {
-                cb(null, devices);
-            });
-        },
-        async (cb) => {
-            Robots.robotsAsync(authTokens).then((robots) => {
-               cb(null, robots);
-            });
-        }
-    ], (err, results) => {
-       // transitioning to UI, remove consoleLogger
-       Logger.Log.Info("transitioning to UI mode, removing console log hook");
-       Logger.logEmitter.removeListener("log", consoleLogger);
-       
-       UI.Setup(authTokens, results[0], results[1]);
-    });
-    
+    UI.Setup(authTokens);
     return 1;
 };
 

@@ -13,7 +13,7 @@ const Contrib = require("blessed-contrib");
 const Logger = require("./log");
 const Devices = require("./devices");
 const Robots = require("./robots");
-function Setup(authTokens, devices, robots) {
+function Setup(authTokens) {
     const screen = Blessed.screen();
     const grid = new Contrib.grid({ rows: 12, cols: 12, screen: screen });
     const deviceTable = grid.set(0, 0, 8, 8, Contrib.table, {

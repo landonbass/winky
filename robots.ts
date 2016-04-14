@@ -1,7 +1,7 @@
 "use strict";
 
+import * as Api     from "./api";
 import * as Auth    from "./auth";
-import * as Request from "request";
 import * as Ui      from "./ui";
 
 export enum RobotStatus {
@@ -19,22 +19,14 @@ export class Robot implements IRobot, Ui.IDisplayFormatter {
     };
 }
 
-export const robotsAsync = (options: Auth.IAuthResult) => {
-    return new Promise<Array<Robot>>( (resolve, _) => {
-        Request({
-            method: "GET",
-            url: "https://api.wink.com/users/me/robots",
-            headers: {"Content-Type": "application/json", "Authorization" : "Bearer " + options.AccessToken}
-        }, (error, response, body) => {
-            let robots = Array<Robot>();
-            JSON.parse(body).data.forEach((robot) => {
-                const r = new Robot();
-                r.Name = robot.name;
-                r.Status = robot.enabled === true ? RobotStatus.Enabled : RobotStatus.Disabled;
-                robots.push(r);
-            });
-            robots.sort();
-            resolve(robots);
-        });
-    });
+export const RobotConverter: Api.IConvertible<Robot> = function (json) {
+    const r = new Robot();
+    r.Name = json.name;
+    r.Name = json.name;
+    r.Status = json.enabled === true ? RobotStatus.Enabled : RobotStatus.Disabled;
+    return r;
+};
+
+export const robotsAsync = (options: Auth.IAuthResult) : Promise<Array<Robot>> => {
+    return Api.getDataAsync<Robot>(RobotConverter, "https://api.wink.com/users/me/robots", "GET", {"Content-Type": "application/json", "Authorization" : "Bearer " + options.AccessToken}, "");
 };

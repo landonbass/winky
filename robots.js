@@ -1,5 +1,5 @@
 "use strict";
-const Request = require("request");
+const Api = require("./api");
 (function (RobotStatus) {
     RobotStatus[RobotStatus["Disabled"] = 0] = "Disabled";
     RobotStatus[RobotStatus["Enabled"] = 1] = "Enabled";
@@ -14,23 +14,14 @@ class Robot {
     }
 }
 exports.Robot = Robot;
+exports.RobotConverter = function (json) {
+    const r = new Robot();
+    r.Name = json.name;
+    r.Name = json.name;
+    r.Status = json.enabled === true ? RobotStatus.Enabled : RobotStatus.Disabled;
+    return r;
+};
 exports.robotsAsync = (options) => {
-    return new Promise((resolve, _) => {
-        Request({
-            method: "GET",
-            url: "https://api.wink.com/users/me/robots",
-            headers: { "Content-Type": "application/json", "Authorization": "Bearer " + options.AccessToken }
-        }, (error, response, body) => {
-            let robots = Array();
-            JSON.parse(body).data.forEach((robot) => {
-                const r = new Robot();
-                r.Name = robot.name;
-                r.Status = robot.enabled === true ? RobotStatus.Enabled : RobotStatus.Disabled;
-                robots.push(r);
-            });
-            robots.sort();
-            resolve(robots);
-        });
-    });
+    return Api.getDataAsync(exports.RobotConverter, "https://api.wink.com/users/me/robots", "GET", { "Content-Type": "application/json", "Authorization": "Bearer " + options.AccessToken }, "");
 };
 //# sourceMappingURL=robots.js.map

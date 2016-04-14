@@ -13,7 +13,7 @@ export interface IDisplayFormatter {
     ToDisplayArray() : Array<string>;
 }
 
-export function Setup(authTokens: Auth.IAuthResult, devices: Array<Devices.Device>, robots: Array<Robots.Robot>) {
+export function Setup(authTokens: Auth.IAuthResult) {
      const screen = Blessed.screen();
      const grid = new Contrib.grid({rows: 12, cols: 12, screen: screen});
      const deviceTable = grid.set(0, 0, 8, 8, Contrib.table,  { 
@@ -82,9 +82,6 @@ export function Setup(authTokens: Auth.IAuthResult, devices: Array<Devices.Devic
    RefreshData(authTokens).then((data) => {
        DrawUi(data);
    });
-    
-    
-
 }
 
 const RefreshData = (authTokens: Auth.IAuthResult) => {

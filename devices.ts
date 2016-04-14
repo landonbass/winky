@@ -29,5 +29,5 @@ export const DeviceConverter: Api.IConvertible<Device>  = function (json) {
 };
 
 export const devicesAsync = (options: Auth.IAuthResult) : Promise<Array<Device>> => {
-    return Api.getDataAsync<Device>(DeviceConverter, "https://api.wink.com/users/me/wink_devices", "GET", {"Content-Type": "application/json", "Authorization" : "Bearer " + options.AccessToken});
+    return Api.getDataAsync<Device>(DeviceConverter, "https://api.wink.com/users/me/wink_devices", "GET", {"Content-Type": "application/json", "Authorization" : "Bearer " + options.AccessToken}, "");
 };

@@ -7,12 +7,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-const Async = require("async");
 const Logger = require("./log");
 const Config = require("./config");
 const Auth = require("./auth");
-const Devices = require("./devices");
-const Robots = require("./robots");
 const UI = require("./ui");
 // bootstrap console output until ui is provisioned
 const consoleLogger = (message) => {
@@ -26,23 +23,7 @@ function init() {
         const authOptions = { ApiUrl: Config.data.ApiUrl, UserName: Config.data.UserName, Password: Config.data.Password, ClientId: Config.data.ClientId, ClientSecret: Config.data.ClientSecret };
         const authTokens = yield Auth.authenticateAync(authOptions);
         Logger.Log.Info("access token received: " + authTokens.AccessToken);
-        Async.parallel([
-                (cb) => __awaiter(this, void 0, void 0, function* () {
-                Devices.devicesAsync(authTokens).then((devices) => {
-                    cb(null, devices);
-                });
-            }),
-                (cb) => __awaiter(this, void 0, void 0, function* () {
-                Robots.robotsAsync(authTokens).then((robots) => {
-                    cb(null, robots);
-                });
-            })
-        ], (err, results) => {
-            // transitioning to UI, remove consoleLogger
-            Logger.Log.Info("transitioning to UI mode, removing console log hook");
-            Logger.logEmitter.removeListener("log", consoleLogger);
-            UI.Setup(authTokens, results[0], results[1]);
-        });
+        UI.Setup(authTokens);
         return 1;
     });
 }
