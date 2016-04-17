@@ -1,11 +1,10 @@
 "use strict";
 
 
-import * as Api      from "./api";
-import * as Config   from "./config";
-import * as Logger   from "./log";
-import * as Readline from "readline";
-import * as Request  from "request";
+import * as Api          from "./api";
+import * as Config       from "./config";
+import * as Logger       from "./log";
+import * as ReadlineSync from "readline-sync";
 
 export interface IAuthOptions {ApiUrl: string; UserName: string; Password: string; ClientId: string; ClientSecret: string; };
 export interface IAuthResult {AccessToken: string; RefreshToken: string; };
@@ -20,19 +19,12 @@ export const authenticateAsync = (options: IAuthOptions) : Promise<IAuthResult> 
 
 export const getTokens = (config: Config.IConfig) : Promise<IAuthResult> => {
     return new Promise<IAuthResult> ((resolve, _) => {
-        const prompt = Readline.createInterface(process.stdin, process.stdout);
-        let username, password = "";
         Logger.Log.Info("tokens not found in config");
-        prompt.question("enter user name:", (result) => {
-            username = result;
-            prompt.question("enter password:", (result) => {
-                password = result;
-                prompt.close();
-                const authOptions: IAuthOptions = {ApiUrl: config.ApiUrl, ClientId: config.ClientId, ClientSecret: config.ClientSecret, UserName: username, Password: password};
-                authenticateAsync(authOptions).then((results) => {
-                    resolve(results);
-                });
-            });
+        const username = ReadlineSync.question("enter user name:");
+        const password = ReadlineSync.question("enter password:", {hideEchoBack: true});
+        const authOptions: IAuthOptions = {ApiUrl: config.ApiUrl, ClientId: config.ClientId, ClientSecret: config.ClientSecret, UserName: username, Password: password};
+        authenticateAsync(authOptions).then((results) => {
+            resolve(results);
         });
     });
 };

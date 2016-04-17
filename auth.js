@@ -1,7 +1,7 @@
 "use strict";
 const Api = require("./api");
 const Logger = require("./log");
-const Readline = require("readline");
+const ReadlineSync = require("readline-sync");
 ;
 ;
 exports.AuthConverter = function (json) {
@@ -12,19 +12,12 @@ exports.authenticateAsync = (options) => {
 };
 exports.getTokens = (config) => {
     return new Promise((resolve, _) => {
-        const prompt = Readline.createInterface(process.stdin, process.stdout);
-        let username, password = "";
         Logger.Log.Info("tokens not found in config");
-        prompt.question("enter user name:", (result) => {
-            username = result;
-            prompt.question("enter password:", (result) => {
-                password = result;
-                prompt.close();
-                const authOptions = { ApiUrl: config.ApiUrl, ClientId: config.ClientId, ClientSecret: config.ClientSecret, UserName: username, Password: password };
-                exports.authenticateAsync(authOptions).then((results) => {
-                    resolve(results);
-                });
-            });
+        const username = ReadlineSync.question("enter user name:");
+        const password = ReadlineSync.question("enter password:", { hideEchoBack: true });
+        const authOptions = { ApiUrl: config.ApiUrl, ClientId: config.ClientId, ClientSecret: config.ClientSecret, UserName: username, Password: password };
+        exports.authenticateAsync(authOptions).then((results) => {
+            resolve(results);
         });
     });
 };
