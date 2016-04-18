@@ -1,6 +1,8 @@
 # Winky
 
-This is a simple application that runs in the terminal and integrates with the Wink API
+This is a simple application that runs in the terminal and integrates with the Wink API  
+
+**note: this is not meant to replace the wink app, home assistant, or openhab. I wanted to learn typescript and play with the wink api.**  
 
 ## To use:
 - Install node (version that can run es6)
