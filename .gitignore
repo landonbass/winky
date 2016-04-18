@@ -37,3 +37,5 @@ node_modules
 
 #exclude configuration
 config.json
+
+.DS_Store

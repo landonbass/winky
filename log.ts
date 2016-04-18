@@ -27,7 +27,6 @@ class Logger implements ILog {
     public Info(message: string) { this.log(LogLevel.Info, message); }
     public Warn(message: string) { this.log(LogLevel.Warn, message); }
     public Error(message: string) { this.log(LogLevel.Error, message); }
-    
     private log(level: LogLevel, message: string) {
         logEmitter.emit("log",`${(new Date).toISOString()} - ${LogLevel[level]} - ${message}`);
     }
