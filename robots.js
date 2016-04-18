@@ -15,11 +15,15 @@ class Robot {
 }
 exports.Robot = Robot;
 exports.RobotConverter = function (json) {
-    const r = new Robot();
-    r.Name = json.name;
-    r.Name = json.name;
-    r.Status = json.enabled === true ? RobotStatus.Enabled : RobotStatus.Disabled;
-    return r;
+    const robots = new Array();
+    json.forEach((r) => {
+        const robot = new Robot();
+        robot.Name = r.name;
+        robot.Name = r.name;
+        robot.Status = r.enabled === true ? RobotStatus.Enabled : RobotStatus.Disabled;
+        robots.push(robot);
+    });
+    return robots;
 };
 exports.robotsAsync = (options) => {
     return Api.getDataAsync(exports.RobotConverter, "https://api.wink.com/users/me/robots", "GET", { "Content-Type": "application/json", "Authorization": "Bearer " + options.AccessToken }, "");

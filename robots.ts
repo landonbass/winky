@@ -19,14 +19,18 @@ export class Robot implements IRobot, Ui.IDisplayFormatter {
     };
 }
 
-export const RobotConverter: Api.IConvertible<Robot> = function (json) {
-    const r = new Robot();
-    r.Name = json.name;
-    r.Name = json.name;
-    r.Status = json.enabled === true ? RobotStatus.Enabled : RobotStatus.Disabled;
-    return r;
+export const RobotConverter: Api.IConvertible<Array<Robot>> = function (json) {
+    const robots = new Array<Robot>();
+    json.forEach((r) => {
+        const robot = new Robot();
+        robot.Name = r.name;
+        robot.Name = r.name;
+        robot.Status = r.enabled === true ? RobotStatus.Enabled : RobotStatus.Disabled;
+        robots.push(robot);
+    });
+    return robots;
 };
 
 export const robotsAsync = (options: Auth.IAuthResult) : Promise<Array<Robot>> => {
-    return Api.getDataAsync<Robot>(RobotConverter, "https://api.wink.com/users/me/robots", "GET", {"Content-Type": "application/json", "Authorization" : "Bearer " + options.AccessToken}, "");
+    return Api.getDataAsync<Array<Robot>>(RobotConverter, "https://api.wink.com/users/me/robots", "GET", {"Content-Type": "application/json", "Authorization" : "Bearer " + options.AccessToken}, "");
 };

@@ -62,6 +62,7 @@ export function Setup(authTokens: Auth.IAuthResult) {
    screen.key(["y", "Y"], function(ch, key) {
      RefreshData(authTokens).then( (data) => {
        DrawUi(data);
+       Logger.Log.Info("refreshed data...");
      });
    });
    

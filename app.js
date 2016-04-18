@@ -28,6 +28,7 @@ function init() {
             Logger.Log.Info(`obtained access token: ${authTokens.AccessToken}`);
         }
         const authTokens = { AccessToken: config.AccessToken, RefreshToken: config.RefreshToken };
+        Logger.logEmitter.removeListener("log", consoleLogger);
         UI.Setup(authTokens);
         return 1;
     });
