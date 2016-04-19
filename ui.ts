@@ -48,6 +48,9 @@ export function Setup(authTokens: Auth.IAuthResult) {
    };
    
    Logger.logEmitter.addListener("log", uiLogger);
+   
+   Logger.Log.Info(`using access token: ${Array(20).join("*") + authTokens.AccessToken.substring(20, authTokens.AccessToken.length)}`);
+    
   
    screen.key(["C-c", "escape", "q"], function(ch, key) {
      return process.exit(0);
@@ -90,12 +93,14 @@ const RefreshData = (authTokens: Auth.IAuthResult) => {
         Async.parallel([
             async (cb) => {
                 Devices.devicesAsync(authTokens).then((devices) => {
+                    Logger.Log.Info(`obtained ${devices.length} devices...`);
                     cb(null, devices);
                 });
             },
             async (cb) => {
                 Robots.robotsAsync(authTokens).then((robots) => {
-                cb(null, robots);
+                    Logger.Log.Info(`obtained ${robots.length} robots...`);
+                    cb(null, robots);
                 });
             }
         ], (err, results) => {

@@ -9,14 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 const Auth = require("./auth");
 const Config = require("./config");
-const Logger = require("./log");
 const UI = require("./ui");
-// bootstrap console output until ui is provisioned
-const consoleLogger = (message) => {
-    console.log(message);
-};
-Logger.logEmitter.addListener("log", consoleLogger);
-Logger.Log.Info("initialized console logger");
+// this is the main entry point to the application
+// it validates that it has tokens and then provisions the UI
 function init() {
     return __awaiter(this, void 0, void 0, function* () {
         const config = yield Config.data();
@@ -25,10 +20,8 @@ function init() {
             yield Config.updateTokens(authTokens.AccessToken, authTokens.RefreshToken);
             config.AccessToken = authTokens.AccessToken;
             config.RefreshToken = authTokens.RefreshToken;
-            Logger.Log.Info(`obtained access token: ${authTokens.AccessToken}`);
         }
         const authTokens = { AccessToken: config.AccessToken, RefreshToken: config.RefreshToken };
-        Logger.logEmitter.removeListener("log", consoleLogger);
         UI.Setup(authTokens);
         return 1;
     });

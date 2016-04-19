@@ -45,6 +45,7 @@ function Setup(authTokens) {
         log.log(message);
     };
     Logger.logEmitter.addListener("log", uiLogger);
+    Logger.Log.Info(`using access token: ${Array(20).join("*") + authTokens.AccessToken.substring(20, authTokens.AccessToken.length)}`);
     screen.key(["C-c", "escape", "q"], function (ch, key) {
         return process.exit(0);
     });
@@ -83,11 +84,13 @@ const RefreshData = (authTokens) => {
         Async.parallel([
                 (cb) => __awaiter(this, void 0, void 0, function* () {
                 Devices.devicesAsync(authTokens).then((devices) => {
+                    Logger.Log.Info(`obtained ${devices.length} devices...`);
                     cb(null, devices);
                 });
             }),
                 (cb) => __awaiter(this, void 0, void 0, function* () {
                 Robots.robotsAsync(authTokens).then((robots) => {
+                    Logger.Log.Info(`obtained ${robots.length} robots...`);
                     cb(null, robots);
                 });
             })
