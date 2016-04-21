@@ -13,4 +13,5 @@ This is a simple application that runs in the terminal and integrates with the W
 Key Mapping:
 - 'd' - set focus to device table
 - 'r' - set focus to robot table
+- 'g' - set focus to group table
 - 'y' - refresh data

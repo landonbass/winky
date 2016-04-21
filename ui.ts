@@ -7,6 +7,7 @@ import * as Contrib from "blessed-contrib";
 import * as Auth    from "./auth";
 import * as Logger  from "./log";
 import * as Devices from "./devices";
+import * as Groups  from "./groups";
 import * as Robots  from "./robots";
 
 export interface IDisplayFormatter {
@@ -16,7 +17,7 @@ export interface IDisplayFormatter {
 export function Setup(authTokens: Auth.IAuthResult) {
      const screen = Blessed.screen();
      const grid = new Contrib.grid({rows: 12, cols: 12, screen: screen});
-     const deviceTable = grid.set(0, 0, 8, 8, Contrib.table,  { 
+     const deviceTable = grid.set(0, 0, 9, 8, Contrib.table,  { 
          keys: true
         , fg: "white"
         , selectedFg: "white"
@@ -27,7 +28,18 @@ export function Setup(authTokens: Auth.IAuthResult) {
         , columnSpacing: 10
         , columnWidth: [40, 40, 7]
     });
-    const robotTable = grid.set(0, 8, 8, 12, Contrib.table,  { 
+    const groupTable = grid.set(0, 6, 9, 9, Contrib.table,  { 
+         keys: true
+        , fg: "white"
+        , selectedFg: "white"
+        , selectedBg: "blue"
+        , interactive: true
+        , label: "Groups - 'g' to focus"
+        , border: {type: "line", fg: "cyan"}
+        , columnSpacing: 10
+        , columnWidth: [40]
+    });
+    const robotTable = grid.set(0, 8, 9, 12, Contrib.table,  { 
          keys: true
         , fg: "white"
         , selectedFg: "white"
@@ -62,6 +74,9 @@ export function Setup(authTokens: Auth.IAuthResult) {
    screen.key(["d", "D"], function(ch, key) {
      deviceTable.focus();
    });
+   screen.key(["g", "G"], function(ch, key) {
+     groupTable.focus();
+   });
    screen.key(["y", "Y"], function(ch, key) {
      RefreshData(authTokens).then( (data) => {
        DrawUi(data);
@@ -81,6 +96,11 @@ export function Setup(authTokens: Auth.IAuthResult) {
             robotData.push(robot.ToDisplayArray());
         });
         robotTable.setData({headers: ["Name", "Status"], data: robotData});
+        const groupData = [];
+        data[2].forEach((group) => {
+            groupData.push(group.ToDisplayArray());
+        });
+        groupTable.setData({headers: ["Name"], data: groupData});
         screen.render();
    };
    RefreshData(authTokens).then((data) => {
@@ -102,9 +122,15 @@ const RefreshData = (authTokens: Auth.IAuthResult) => {
                     Logger.Log.Info(`obtained ${robots.length} robots...`);
                     cb(null, robots);
                 });
+            },
+            async (cb) => {
+                Groups.groupsAsync(authTokens).then((groups) => {
+                    Logger.Log.Info(`obtained ${groups.length} groups...`);
+                    cb(null, groups);
+                });
             }
         ], (err, results) => {
-        resolve([results[0], results[1]]);
+        resolve([results[0], results[1], results[2]]);
         });
     });
 };
