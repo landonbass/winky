@@ -19,6 +19,9 @@ export class Device implements IDevice, Ui.IDisplayFormatter {
     public toString = () : string => {
         return `${this.Name} - ${this.Model}`;
     };
+    public Id = () : string => {
+      return this.Identifier.Id;
+    };
     public ToDisplayArray = () : Array<string> => {
       const battery = isNaN(this.Battery) ? "" : (this.Battery) * 100 + "%";
       return [this.Name || "", DeviceType[this.Identifier.Type] || "", this.Model || "", battery];
