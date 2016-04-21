@@ -25,8 +25,8 @@ function Setup(authTokens) {
         interactive: true,
         label: "Devices - 'd' to focus",
         border: { type: "line", fg: "cyan" },
-        columnSpacing: 10,
-        columnWidth: [40, 40, 7]
+        columnSpacing: 1,
+        columnWidth: [35, 20, 40, 7]
     });
     const groupTable = grid.set(0, 6, 9, 9, Contrib.table, {
         keys: true,
@@ -36,8 +36,8 @@ function Setup(authTokens) {
         interactive: true,
         label: "Groups - 'g' to focus",
         border: { type: "line", fg: "cyan" },
-        columnSpacing: 10,
-        columnWidth: [40]
+        columnSpacing: 1,
+        columnWidth: [20]
     });
     const robotTable = grid.set(0, 8, 9, 12, Contrib.table, {
         keys: true,
@@ -47,8 +47,8 @@ function Setup(authTokens) {
         interactive: true,
         label: "Robots - 'r' to focus",
         border: { type: "line", fg: "cyan" },
-        columnSpacing: 10,
-        columnWidth: [40, 40]
+        columnSpacing: 1,
+        columnWidth: [30, 20]
     });
     const log = grid.set(8, 0, 4, 12, Contrib.log, { fg: "green",
         selectedFg: "green",
@@ -81,7 +81,7 @@ function Setup(authTokens) {
         data[0].forEach((device) => {
             deviceData.push(device.ToDisplayArray());
         });
-        deviceTable.setData({ headers: ["Name", "Type", "Battery"], data: deviceData });
+        deviceTable.setData({ headers: ["Name", "Type", "Model", "Battery"], data: deviceData });
         const robotData = [];
         data[1].forEach((robot) => {
             robotData.push(robot.ToDisplayArray());
