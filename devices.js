@@ -40,18 +40,18 @@ exports.DeviceConverter = function (json) {
 };
 const getDeviceIdentifier = (device) => {
     if (device.hasOwnProperty("garage_door_id"))
-        return { Id: device.garage_door_id, Type: DeviceType.GarageDoor };
+        return { Id: device.garage_door_id, IdPropertyName: "garage_door_id", Type: DeviceType.GarageDoor };
     if (device.hasOwnProperty("key_id"))
-        return { Id: device.key_id, Type: DeviceType.Key };
+        return { Id: device.key_id, IdPropertyName: "key_id", Type: DeviceType.Key };
     if (device.hasOwnProperty("light_bulb_id"))
-        return { Id: device.light_bulb_id, Type: DeviceType.LightBulb };
+        return { Id: device.light_bulb_id, IdPropertyName: "light_bulb_id", Type: DeviceType.LightBulb };
     if (device.hasOwnProperty("lock_id"))
-        return { Id: device.lock_id, Type: DeviceType.Lock };
+        return { Id: device.lock_id, IdPropertyName: "lock_id", Type: DeviceType.Lock };
     if (device.hasOwnProperty("sensor_pod_id"))
-        return { Id: device.sensor_pod_id, Type: DeviceType.SensorPod };
+        return { Id: device.sensor_pod_id, IdPropertyName: "sensor_pod_id", Type: DeviceType.SensorPod };
     if (device.hasOwnProperty("thermostat_id"))
-        return { Id: device.thermostat_id, Type: DeviceType.Thermostat };
-    return { Id: device.hub_id, Type: DeviceType.Hub };
+        return { Id: device.thermostat_id, IdPropertyName: "thermostat_id", Type: DeviceType.Thermostat };
+    return { Id: device.hub_id, IdPropertyName: "hub_id", Type: DeviceType.Hub };
 };
 exports.devicesAsync = (options) => {
     return Api.getDataAsync(exports.DeviceConverter, "https://api.wink.com/users/me/wink_devices", "GET", { "Content-Type": "application/json", "Authorization": "Bearer " + options.AccessToken }, "");

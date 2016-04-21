@@ -7,14 +7,13 @@ import * as Ui      from "./ui";
 
 export enum DeviceType {GarageDoor, Hub, Key, LightBulb, Lock, SensorPod, Thermostat, Unknown};
 
-export interface DeviceIdentifier {Id: string; Type: DeviceType; };
+export interface DeviceIdentifier {Id: string; IdPropertyName:string; Type: DeviceType; };
 
 export interface IDevice {Identifier: DeviceIdentifier; Name: string; Model: string; Battery: number; };
 
 export class Device implements IDevice, Ui.IDisplayFormatter {
     public Identifier: DeviceIdentifier;
     public Name:       string;
-    public Type:       DeviceType;
     public Model:      string;
     public Battery:    number;
     public toString = () : string => {
@@ -40,13 +39,13 @@ export const DeviceConverter: Api.IConvertible<Array<Device>>  = function (json)
 };
 
 const getDeviceIdentifier = (device: any) : DeviceIdentifier => {
-  if (device.hasOwnProperty("garage_door_id"))  return {Id: device.garage_door_id, Type: DeviceType.GarageDoor};
-  if (device.hasOwnProperty("key_id"))          return {Id: device.key_id, Type: DeviceType.Key};
-  if (device.hasOwnProperty("light_bulb_id"))   return {Id: device.light_bulb_id, Type: DeviceType.LightBulb};
-  if (device.hasOwnProperty("lock_id"))         return {Id: device.lock_id, Type: DeviceType.Lock};
-  if (device.hasOwnProperty("sensor_pod_id"))   return {Id: device.sensor_pod_id, Type: DeviceType.SensorPod};
-  if (device.hasOwnProperty("thermostat_id"))   return {Id: device.thermostat_id, Type: DeviceType.Thermostat};
-  return {Id: device.hub_id, Type: DeviceType.Hub};
+  if (device.hasOwnProperty("garage_door_id"))  return {Id: device.garage_door_id,  IdPropertyName: "garage_door_id",   Type: DeviceType.GarageDoor};
+  if (device.hasOwnProperty("key_id"))          return {Id: device.key_id,          IdPropertyName: "key_id",           Type: DeviceType.Key};
+  if (device.hasOwnProperty("light_bulb_id"))   return {Id: device.light_bulb_id,   IdPropertyName: "light_bulb_id",    Type: DeviceType.LightBulb};
+  if (device.hasOwnProperty("lock_id"))         return {Id: device.lock_id,         IdPropertyName: "lock_id",          Type: DeviceType.Lock};
+  if (device.hasOwnProperty("sensor_pod_id"))   return {Id: device.sensor_pod_id,   IdPropertyName: "sensor_pod_id",    Type: DeviceType.SensorPod};
+  if (device.hasOwnProperty("thermostat_id"))   return {Id: device.thermostat_id,   IdPropertyName: "thermostat_id",    Type: DeviceType.Thermostat};
+  return {Id: device.hub_id, IdPropertyName: "hub_id", Type: DeviceType.Hub};
 };
 
 export const devicesAsync = (options: Auth.IAuthResult) : Promise<Array<Device>> => {
