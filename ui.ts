@@ -1,7 +1,5 @@
 "use strict";
 
-import * as Fs from "fs";
-
 import * as Async   from "async";
 import * as Blessed from "blessed";
 import * as Contrib from "blessed-contrib";
