@@ -19,9 +19,6 @@ class Device {
         this.toString = () => {
             return `${this.Name} - ${this.Model}`;
         };
-        this.Id = () => {
-            return this.Identifier.Id;
-        };
         this.ToDisplayArray = () => {
             const battery = isNaN(this.Battery) ? "" : (this.Battery) * 100 + "%";
             return [this.Name || "", DeviceType[this.Identifier.Type] || "", this.Model || "", battery];
@@ -34,6 +31,7 @@ exports.DeviceConverter = function (json) {
     json.forEach((d) => {
         const device = new Device();
         device.Identifier = getDeviceIdentifier(d);
+        device.Id = device.Identifier.Id;
         device.Name = d.name;
         device.Model = d.model_name;
         device.Battery = d.last_reading.battery;

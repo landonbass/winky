@@ -18,7 +18,7 @@ exports.RobotConverter = function (json) {
     const robots = new Array();
     json.forEach((r) => {
         const robot = new Robot();
-        robot.Name = r.name;
+        robot.Id = r.robot_id;
         robot.Name = r.name;
         robot.Status = r.enabled === true ? RobotStatus.Enabled : RobotStatus.Disabled;
         robots.push(robot);

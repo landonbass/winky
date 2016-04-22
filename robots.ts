@@ -9,10 +9,11 @@ export enum RobotStatus {
     Enabled
 }
 
-export interface IRobot {Name: string; Status: RobotStatus; };
+export interface IRobot {Id: string; Name: string; Status: RobotStatus; };
 
 export class Robot implements IRobot, Ui.IDisplayFormatter {
-    public Name  :  string;
+    public Id    : string;
+    public Name  : string;
     public Status: RobotStatus;
     public ToDisplayArray = () : Array<string> => {
         return [this.Name, RobotStatus[this.Status]];
@@ -23,7 +24,7 @@ export const RobotConverter: Api.IConvertible<Array<Robot>> = function (json) {
     const robots = new Array<Robot>();
     json.forEach((r) => {
         const robot = new Robot();
-        robot.Name = r.name;
+        robot.Id = r.robot_id;
         robot.Name = r.name;
         robot.Status = r.enabled === true ? RobotStatus.Enabled : RobotStatus.Disabled;
         robots.push(robot);

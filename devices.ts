@@ -9,18 +9,16 @@ export enum DeviceType {GarageDoor, Hub, Key, LightBulb, Lock, SensorPod, Thermo
 
 export interface DeviceIdentifier {Id: string; IdPropertyName:string; Type: DeviceType; };
 
-export interface IDevice {Identifier: DeviceIdentifier; Name: string; Model: string; Battery: number; };
+export interface IDevice {Id: string; Identifier: DeviceIdentifier; Name: string; Model: string; Battery: number; };
 
 export class Device implements IDevice, Ui.IDisplayFormatter {
+    public Id        : string;
     public Identifier: DeviceIdentifier;
     public Name:       string;
     public Model:      string;
     public Battery:    number;
     public toString = () : string => {
         return `${this.Name} - ${this.Model}`;
-    };
-    public Id = () : string => {
-      return this.Identifier.Id;
     };
     public ToDisplayArray = () : Array<string> => {
       const battery = isNaN(this.Battery) ? "" : (this.Battery) * 100 + "%";
@@ -33,6 +31,7 @@ export const DeviceConverter: Api.IConvertible<Array<Device>>  = function (json)
     json.forEach((d) => {
         const device      = new Device();
         device.Identifier = getDeviceIdentifier(d);
+        device.Id        = device.Identifier.Id;
         device.Name       = d.name;
         device.Model      = d.model_name;
         device.Battery    = d.last_reading.battery;

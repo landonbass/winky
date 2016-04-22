@@ -11,9 +11,10 @@ class Group {
 exports.Group = Group;
 exports.GroupConverter = function (json) {
     const groups = new Array();
-    json.forEach((r) => {
+    json.forEach((g) => {
         const group = new Group();
-        group.Name = r.name;
+        group.Id = g.group_id;
+        group.Name = g.name;
         groups.push(group);
     });
     return groups;
