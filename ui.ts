@@ -92,15 +92,15 @@ export function Setup(authTokens: Auth.IAuthResult) {
    });
 
    deviceTable.rows.on("select", (data, index) => {
-       Logger.Log.Info(`selected device ${index + 1} with id ${devicesLookup[index].Id}`);
+       Logger.Log.Info(`selected device with id ${devicesLookup[index].Id}`);
    });
    
    groupTable.rows.on("select", (data, index) => {
-       Logger.Log.Info(`selected group ${index + 1} with id ${groupsLookup[index].Id}`);
+       Logger.Log.Info(`selected group with id ${groupsLookup[index].Id}`);
    });
    
    robotTable.rows.on("select", (data, index) => {
-       Logger.Log.Info(`selected robot ${index + 1} with id ${robotsLookup[index].Id}`);
+       Logger.Log.Info(`selected robot with id ${robotsLookup[index].Id}`);
    });
 
    const DrawUi = (data) => {
