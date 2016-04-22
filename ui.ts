@@ -1,5 +1,7 @@
 "use strict";
 
+import * as Fs from "fs";
+
 import * as Async   from "async";
 import * as Blessed from "blessed";
 import * as Contrib from "blessed-contrib";
@@ -64,27 +66,30 @@ export function Setup(authTokens: Auth.IAuthResult) {
    Logger.Log.Info(`using access token: ${Array(20).join("*") + authTokens.AccessToken.substring(20, authTokens.AccessToken.length)}`);
     
   
-   screen.key(["C-c", "escape", "q"], function(ch, key) {
+   screen.key(["C-c", "escape", "q"], (ch, key) => {
      return process.exit(0);
    });
 
-   screen.key(["r", "R"], function(ch, key) {
+   screen.key(["r", "R"], (ch, key) => {
      robotTable.focus();
    });
-   screen.key(["d", "D"], function(ch, key) {
+   screen.key(["d", "D"], (ch, key) => {
      deviceTable.focus();
    });
-   screen.key(["g", "G"], function(ch, key) {
+   screen.key(["g", "G"], (ch, key) => {
      groupTable.focus();
    });
-   screen.key(["y", "Y"], function(ch, key) {
+   screen.key(["y", "Y"], (ch, key) => {
      RefreshData(authTokens).then( (data) => {
        DrawUi(data);
        Logger.Log.Info("refreshed data...");
      });
    });
-   
-   
+
+   deviceTable.rows.on("select", (data, index) => {
+       Logger.Log.Info(`selected device ${index + 1}`);
+   });
+
    const DrawUi = (data) => {
         const deviceData = [];
         data[0].forEach((device) => {
