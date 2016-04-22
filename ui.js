@@ -14,6 +14,7 @@ const Logger = require("./log");
 const Devices = require("./devices");
 const Groups = require("./groups");
 const Robots = require("./robots");
+let devicesLookup = [], groupsLookup = [], robotsLookup = [];
 function Setup(authTokens) {
     const screen = Blessed.screen();
     const grid = new Contrib.grid({ rows: 12, cols: 12, screen: screen });
@@ -77,7 +78,7 @@ function Setup(authTokens) {
         });
     });
     deviceTable.rows.on("select", (data, index) => {
-        Logger.Log.Info(`selected device ${index + 1}`);
+        Logger.Log.Info(`selected device ${index + 1} with id ${devicesLookup[index].Id()}`);
     });
     groupTable.rows.on("select", (data, index) => {
         Logger.Log.Info(`selected group ${index + 1}`);
@@ -114,18 +115,21 @@ const RefreshData = (authTokens) => {
                 (cb) => __awaiter(this, void 0, void 0, function* () {
                 Devices.devicesAsync(authTokens).then((devices) => {
                     Logger.Log.Info(`obtained ${devices.length} devices...`);
+                    devicesLookup = devices;
                     cb(null, devices);
                 });
             }),
                 (cb) => __awaiter(this, void 0, void 0, function* () {
                 Robots.robotsAsync(authTokens).then((robots) => {
                     Logger.Log.Info(`obtained ${robots.length} robots...`);
+                    robotsLookup = robots;
                     cb(null, robots);
                 });
             }),
                 (cb) => __awaiter(this, void 0, void 0, function* () {
                 Groups.groupsAsync(authTokens).then((groups) => {
                     Logger.Log.Info(`obtained ${groups.length} groups...`);
+                    groupsLookup = groups;
                     cb(null, groups);
                 });
             })

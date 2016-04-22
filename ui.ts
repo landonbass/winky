@@ -12,6 +12,11 @@ import * as Devices from "./devices";
 import * as Groups  from "./groups";
 import * as Robots  from "./robots";
 
+
+let devicesLookup = [],
+    groupsLookup  = [],
+    robotsLookup  = [];
+
 export interface IDisplayFormatter {
     ToDisplayArray() : Array<string>;
 }
@@ -87,7 +92,7 @@ export function Setup(authTokens: Auth.IAuthResult) {
    });
 
    deviceTable.rows.on("select", (data, index) => {
-       Logger.Log.Info(`selected device ${index + 1}`);
+       Logger.Log.Info(`selected device ${index + 1} with id ${devicesLookup[index].Id()}`);
    });
    
    groupTable.rows.on("select", (data, index) => {
@@ -127,18 +132,21 @@ const RefreshData = (authTokens: Auth.IAuthResult) => {
             async (cb) => {
                 Devices.devicesAsync(authTokens).then((devices) => {
                     Logger.Log.Info(`obtained ${devices.length} devices...`);
+                    devicesLookup = devices;
                     cb(null, devices);
                 });
             },
             async (cb) => {
                 Robots.robotsAsync(authTokens).then((robots) => {
                     Logger.Log.Info(`obtained ${robots.length} robots...`);
+                    robotsLookup = robots;
                     cb(null, robots);
                 });
             },
             async (cb) => {
                 Groups.groupsAsync(authTokens).then((groups) => {
                     Logger.Log.Info(`obtained ${groups.length} groups...`);
+                    groupsLookup = groups;
                     cb(null, groups);
                 });
             }
