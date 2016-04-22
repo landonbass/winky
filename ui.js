@@ -79,6 +79,12 @@ function Setup(authTokens) {
     deviceTable.rows.on("select", (data, index) => {
         Logger.Log.Info(`selected device ${index + 1}`);
     });
+    groupTable.rows.on("select", (data, index) => {
+        Logger.Log.Info(`selected group ${index + 1}`);
+    });
+    robotTable.rows.on("select", (data, index) => {
+        Logger.Log.Info(`selected robot ${index + 1}`);
+    });
     const DrawUi = (data) => {
         const deviceData = [];
         data[0].forEach((device) => {
