@@ -90,7 +90,9 @@ export function Setup(authTokens: Auth.IAuthResult) {
    });
 
    deviceTable.rows.on("select", (data, index) => {
-       Logger.Log.Info(`selected device with id ${devicesLookup[index].Id}`);
+       const device : Devices.Device = devicesLookup[index];
+       Logger.Log.Info(`selected device with id ${device.Id}`);
+       Devices.toggleDeviceState(authTokens, device);
    });
    
    groupTable.rows.on("select", (data, index) => {
@@ -106,7 +108,7 @@ export function Setup(authTokens: Auth.IAuthResult) {
         data[0].forEach((device) => {
             deviceData.push(device.ToDisplayArray());
         });
-        deviceTable.setData({headers: ["Name", "Type", "Model", "Battery"], data: deviceData});
+        deviceTable.setData({headers: ["Name", "Type", "Status", "Battery"], data: deviceData});
         const robotData = [];
         data[1].forEach((robot) => {
             robotData.push(robot.ToDisplayArray());

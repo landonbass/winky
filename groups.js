@@ -20,6 +20,6 @@ exports.GroupConverter = function (json) {
     return groups;
 };
 exports.groupsAsync = (options) => {
-    return Api.getDataAsync(exports.GroupConverter, "https://api.wink.com/users/me/groups", "GET", { "Content-Type": "application/json", "Authorization": "Bearer " + options.AccessToken }, "");
+    return Api.dataAsync(exports.GroupConverter, "https://api.wink.com/users/me/groups", "GET", { "Content-Type": "application/json", "Authorization": "Bearer " + options.AccessToken }, "");
 };
 //# sourceMappingURL=groups.js.map

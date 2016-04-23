@@ -33,5 +33,5 @@ export const RobotConverter: Api.IConvertible<Array<Robot>> = function (json) {
 };
 
 export const robotsAsync = (options: Auth.IAuthResult) : Promise<Array<Robot>> => {
-    return Api.getDataAsync<Array<Robot>>(RobotConverter, "https://api.wink.com/users/me/robots", "GET", {"Content-Type": "application/json", "Authorization" : "Bearer " + options.AccessToken}, "");
+    return Api.dataAsync<Array<Robot>>(RobotConverter, "https://api.wink.com/users/me/robots", "GET", {"Content-Type": "application/json", "Authorization" : "Bearer " + options.AccessToken}, "");
 };

@@ -14,7 +14,7 @@ export const AuthConverter: Api.IConvertible<IAuthResult> = function (json) {
 };
 
 export const authenticateAsync = (options: IAuthOptions) : Promise<IAuthResult> => {
-  return Api.getDataAsync<IAuthResult>(AuthConverter, options.ApiUrl, "POST", {"Content-Type": "application/json"}, "{  \"client_id\": \"" + options.ClientId + "\",  \"client_secret\": \"" + options.ClientSecret + "\",  \"username\": \"" + options.UserName + "\",  \"password\": \"" + options.Password + "\",  \"grant_type\": \"password\"}");
+  return Api.dataAsync<IAuthResult>(AuthConverter, options.ApiUrl, "POST", {"Content-Type": "application/json"}, "{  \"client_id\": \"" + options.ClientId + "\",  \"client_secret\": \"" + options.ClientSecret + "\",  \"username\": \"" + options.UserName + "\",  \"password\": \"" + options.Password + "\",  \"grant_type\": \"password\"}");
 };
 
 export const getTokens = (config: Config.IConfig) : Promise<IAuthResult> => {

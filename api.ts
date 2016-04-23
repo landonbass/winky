@@ -21,11 +21,12 @@ const createOptionObject = (url: string, method: string, headers: {}, body: {}) 
   let result = {url: url, method: method};
   if (headers !== "") result["headers"] = headers;
   if (body !== "")    result["body"] = body;
+
   return result;
 };
 
 // simple typed wrapper to minimize boilerplate code when calling the wink api
-export async function getDataAsync<TResult> (converter: IConvertible<TResult>, url: string, method: string, headers: {}, body: {}): Promise<TResult> {
+export async function dataAsync<TResult> (converter: IConvertible<TResult>, url: string, method: string, headers: {}, body: {}): Promise<TResult> {
     return new Promise<TResult> ((resolve, _) => {
         Request(createOptionObject(url, method, headers, body), (error, response, body) => {
             let results : TResult = converter(JSON.parse(body).data);

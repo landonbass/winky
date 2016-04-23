@@ -5,6 +5,7 @@ const Logger = require("./log");
 // the application does not store username or password, instead it uses the wink api
 // to get the needed oauth tokens and store those
 const configPath = "./config.json";
+// TODO get real client id and secret
 const defaultConfig = { ApiUrl: "https://api.wink.com/oauth2/token", ClientId: "quirky_wink_android_app", ClientSecret: "e749124ad386a5a35c0ab554a4f2c045", AccessToken: "", RefreshToken: "" };
 ;
 // returns the config values, creating a new file if needed

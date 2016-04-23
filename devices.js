@@ -12,6 +12,12 @@ const Api = require("./api");
 })(exports.DeviceType || (exports.DeviceType = {}));
 var DeviceType = exports.DeviceType;
 ;
+(function (DeviceStatus) {
+    DeviceStatus[DeviceStatus["Off"] = 0] = "Off";
+    DeviceStatus[DeviceStatus["On"] = 1] = "On";
+    DeviceStatus[DeviceStatus["Unknown"] = 2] = "Unknown";
+})(exports.DeviceStatus || (exports.DeviceStatus = {}));
+var DeviceStatus = exports.DeviceStatus;
 ;
 ;
 class Device {
@@ -21,7 +27,7 @@ class Device {
         };
         this.ToDisplayArray = () => {
             const battery = isNaN(this.Battery) ? "" : (this.Battery) * 100 + "%";
-            return [this.Name || "", DeviceType[this.Identifier.Type] || "", this.Model || "", battery];
+            return [this.Name || "", DeviceType[this.Identifier.Type] || "", DeviceStatus[this.Status] || "", battery];
         };
     }
 }
@@ -31,6 +37,7 @@ exports.DeviceConverter = function (json) {
     json.forEach((d) => {
         const device = new Device();
         device.Identifier = getDeviceIdentifier(d);
+        device.Status = getDeviceStatus(d);
         device.Id = device.Identifier.Id;
         device.Name = d.name;
         device.Model = d.model_name;
@@ -54,8 +61,36 @@ const getDeviceIdentifier = (device) => {
         return { Id: device.thermostat_id, IdPropertyName: "thermostat_id", Type: DeviceType.Thermostat };
     return { Id: device.hub_id, IdPropertyName: "hub_id", Type: DeviceType.Hub };
 };
-exports.devicesAsync = (options) => {
-    return Api.getDataAsync(exports.DeviceConverter, "https://api.wink.com/users/me/wink_devices", "GET", { "Content-Type": "application/json", "Authorization": "Bearer " + options.AccessToken }, "");
+const getDeviceStatus = (device) => {
+    if (device.hasOwnProperty("light_bulb_id"))
+        return device.last_reading.powered ? DeviceStatus.On : DeviceStatus.Off;
+    //if (device.hasOwnProperty("key_id"))          return {Id: device.key_id,          IdPropertyName: "key_id",           Type: DeviceType.Key};
+    //if (device.hasOwnProperty("light_bulb_id"))   return {Id: device.light_bulb_id,   IdPropertyName: "light_bulb_id",    Type: DeviceType.LightBulb};
+    //if (device.hasOwnProperty("lock_id"))         return {Id: device.lock_id,         IdPropertyName: "lock_id",          Type: DeviceType.Lock};
+    //if (device.hasOwnProperty("sensor_pod_id"))   return {Id: device.sensor_pod_id,   IdPropertyName: "sensor_pod_id",    Type: DeviceType.SensorPod};
+    //if (device.hasOwnProperty("thermostat_id"))   return {Id: device.thermostat_id,   IdPropertyName: "thermostat_id",    Type: DeviceType.Thermostat};
+    //return {Id: device.hub_id, IdPropertyName: "hub_id", Type: DeviceType.Hub};
+    // TODO handle other device types
+    return DeviceStatus.Unknown;
 };
-//export const setDeviceState = (options: Auth.IAuthResult, deviceId: string, state: string) : Promise< 
+const convertDeviceTypeToUrlType = (type) => {
+    if (type === DeviceType.LightBulb)
+        return "light_bulbs";
+    return "";
+};
+const noop = () => { };
+exports.devicesAsync = (options) => {
+    return Api.dataAsync(exports.DeviceConverter, "https://api.wink.com/users/me/wink_devices", "GET", { "Content-Type": "application/json", "Authorization": "Bearer " + options.AccessToken }, "");
+};
+exports.setDeviceState = (options, deviceType, deviceId, state) => {
+    return Api.dataAsync(noop, `https://api.wink.com/${convertDeviceTypeToUrlType(deviceType)}/${deviceId}`, "PUT", { "Content-Type": "application/json", "Authorization": "Bearer " + options.AccessToken }, state);
+};
+exports.toggleDeviceState = (options, device) => {
+    let state = "";
+    if (device.Identifier.Type === DeviceType.LightBulb) {
+        const newStatus = device.Status === DeviceStatus.On ? false : true;
+        state = `{"desired_state":{"powered":${newStatus}}}`;
+    }
+    return exports.setDeviceState(options, device.Identifier.Type, device.Id, state);
+};
 //# sourceMappingURL=devices.js.map

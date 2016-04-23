@@ -24,7 +24,7 @@ const createOptionObject = (url, method, headers, body) => {
     return result;
 };
 // simple typed wrapper to minimize boilerplate code when calling the wink api
-function getDataAsync(converter, url, method, headers, body) {
+function dataAsync(converter, url, method, headers, body) {
     return __awaiter(this, void 0, Promise, function* () {
         return new Promise((resolve, _) => {
             Request(createOptionObject(url, method, headers, body), (error, response, body) => {
@@ -34,6 +34,6 @@ function getDataAsync(converter, url, method, headers, body) {
         });
     });
 }
-exports.getDataAsync = getDataAsync;
+exports.dataAsync = dataAsync;
 ;
 //# sourceMappingURL=api.js.map

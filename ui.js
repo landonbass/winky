@@ -78,7 +78,9 @@ function Setup(authTokens) {
         });
     });
     deviceTable.rows.on("select", (data, index) => {
-        Logger.Log.Info(`selected device with id ${devicesLookup[index].Id}`);
+        const device = devicesLookup[index];
+        Logger.Log.Info(`selected device with id ${device.Id}`);
+        Devices.toggleDeviceState(authTokens, device);
     });
     groupTable.rows.on("select", (data, index) => {
         Logger.Log.Info(`selected group with id ${groupsLookup[index].Id}`);
@@ -91,7 +93,7 @@ function Setup(authTokens) {
         data[0].forEach((device) => {
             deviceData.push(device.ToDisplayArray());
         });
-        deviceTable.setData({ headers: ["Name", "Type", "Model", "Battery"], data: deviceData });
+        deviceTable.setData({ headers: ["Name", "Type", "Status", "Battery"], data: deviceData });
         const robotData = [];
         data[1].forEach((robot) => {
             robotData.push(robot.ToDisplayArray());

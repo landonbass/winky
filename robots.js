@@ -26,6 +26,6 @@ exports.RobotConverter = function (json) {
     return robots;
 };
 exports.robotsAsync = (options) => {
-    return Api.getDataAsync(exports.RobotConverter, "https://api.wink.com/users/me/robots", "GET", { "Content-Type": "application/json", "Authorization": "Bearer " + options.AccessToken }, "");
+    return Api.dataAsync(exports.RobotConverter, "https://api.wink.com/users/me/robots", "GET", { "Content-Type": "application/json", "Authorization": "Bearer " + options.AccessToken }, "");
 };
 //# sourceMappingURL=robots.js.map

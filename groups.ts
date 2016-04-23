@@ -27,5 +27,5 @@ export const GroupConverter: Api.IConvertible<Array<Group>> = function (json) {
 };
 
 export const groupsAsync = (options: Auth.IAuthResult) : Promise<Array<Group>> => {
-    return Api.getDataAsync<Array<Group>>(GroupConverter, "https://api.wink.com/users/me/groups", "GET", {"Content-Type": "application/json", "Authorization" : "Bearer " + options.AccessToken}, "");
+    return Api.dataAsync<Array<Group>>(GroupConverter, "https://api.wink.com/users/me/groups", "GET", {"Content-Type": "application/json", "Authorization" : "Bearer " + options.AccessToken}, "");
 };
