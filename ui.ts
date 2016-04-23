@@ -92,7 +92,17 @@ export function Setup(authTokens: Auth.IAuthResult) {
    deviceTable.rows.on("select", (data, index) => {
        const device : Devices.Device = devicesLookup[index];
        Logger.Log.Info(`selected device with id ${device.Id}`);
-       Devices.toggleDeviceState(authTokens, device);
+       // TODO this does not always work
+       // api does not update immediately, so we delay
+       Devices.toggleDeviceState(authTokens, device).then((result) => {
+            setTimeout(
+                () => {
+                    RefreshData(authTokens).then( (data) => {
+                        DrawUi(data);
+                        Logger.Log.Info("refreshed data...");
+                    });
+                }, 3000);         
+       });
    });
    
    groupTable.rows.on("select", (data, index) => {

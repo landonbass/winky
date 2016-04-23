@@ -27,6 +27,16 @@ export class Device implements IDevice, Ui.IDisplayFormatter {
       const battery = isNaN(this.Battery) ? "" : (this.Battery) * 100 + "%";
       return [this.Name || "", DeviceType[this.Identifier.Type] || "", DeviceStatus[this.Status] || "", battery];
     };
+    
+    public SwapState = () : string => {
+        let state = "";
+        if (this.Identifier.Type === DeviceType.LightBulb) {
+            const newStatus = this.Status === DeviceStatus.On ? false : true;
+            state = `{"desired_state":{"powered":${newStatus}}}`;
+        }  
+        
+        return state;
+    };
 }
 
 export const DeviceConverter: Api.IConvertible<Array<Device>>  = function (json) {
@@ -83,11 +93,8 @@ export const setDeviceState = (options: Auth.IAuthResult, deviceType: DeviceType
 };
 
 export const toggleDeviceState = (options: Auth.IAuthResult, device: Device) : Promise <void> => {
-    let state = "";
-    if (device.Identifier.Type === DeviceType.LightBulb) {
-        const newStatus = device.Status === DeviceStatus.On ? false : true;
-        state = `{"desired_state":{"powered":${newStatus}}}`;
-    }
+    // currently only work for lights
+    if (device.Identifier.Type !== DeviceType.LightBulb) return;
     
-    return setDeviceState(options, device.Identifier.Type, device.Id, state);
+    return setDeviceState(options, device.Identifier.Type, device.Id, device.SwapState());
 }

@@ -29,6 +29,14 @@ class Device {
             const battery = isNaN(this.Battery) ? "" : (this.Battery) * 100 + "%";
             return [this.Name || "", DeviceType[this.Identifier.Type] || "", DeviceStatus[this.Status] || "", battery];
         };
+        this.SwapState = () => {
+            let state = "";
+            if (this.Identifier.Type === DeviceType.LightBulb) {
+                const newStatus = this.Status === DeviceStatus.On ? false : true;
+                state = `{"desired_state":{"powered":${newStatus}}}`;
+            }
+            return state;
+        };
     }
 }
 exports.Device = Device;
@@ -86,11 +94,9 @@ exports.setDeviceState = (options, deviceType, deviceId, state) => {
     return Api.dataAsync(noop, `https://api.wink.com/${convertDeviceTypeToUrlType(deviceType)}/${deviceId}`, "PUT", { "Content-Type": "application/json", "Authorization": "Bearer " + options.AccessToken }, state);
 };
 exports.toggleDeviceState = (options, device) => {
-    let state = "";
-    if (device.Identifier.Type === DeviceType.LightBulb) {
-        const newStatus = device.Status === DeviceStatus.On ? false : true;
-        state = `{"desired_state":{"powered":${newStatus}}}`;
-    }
-    return exports.setDeviceState(options, device.Identifier.Type, device.Id, state);
+    // currently only work for lights
+    if (device.Identifier.Type !== DeviceType.LightBulb)
+        return;
+    return exports.setDeviceState(options, device.Identifier.Type, device.Id, device.SwapState());
 };
 //# sourceMappingURL=devices.js.map
