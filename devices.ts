@@ -7,7 +7,7 @@ import * as Ui      from "./ui";
 
 export enum DeviceType {GarageDoor, Hub, Key, LightBulb, Lock, SensorPod, Thermostat, Unknown};
 
-export enum DeviceStatus {Off, On, Unknown}
+export enum DeviceStatus {Off, On, Unknown, NA}
 
 export interface DeviceIdentifier {Id: string; IdPropertyName:string; Type: DeviceType; };
 
@@ -66,20 +66,19 @@ const getDeviceIdentifier = (device: any) : DeviceIdentifier => {
 
 const getDeviceStatus = (device: any) : DeviceStatus => {
   if (device.hasOwnProperty("light_bulb_id"))  return device.last_reading.powered ? DeviceStatus.On : DeviceStatus.Off;
-  //if (device.hasOwnProperty("key_id"))          return {Id: device.key_id,          IdPropertyName: "key_id",           Type: DeviceType.Key};
+  if (device.hasOwnProperty("key_id"))         return DeviceStatus.NA;
   //if (device.hasOwnProperty("light_bulb_id"))   return {Id: device.light_bulb_id,   IdPropertyName: "light_bulb_id",    Type: DeviceType.LightBulb};
   //if (device.hasOwnProperty("lock_id"))         return {Id: device.lock_id,         IdPropertyName: "lock_id",          Type: DeviceType.Lock};
   //if (device.hasOwnProperty("sensor_pod_id"))   return {Id: device.sensor_pod_id,   IdPropertyName: "sensor_pod_id",    Type: DeviceType.SensorPod};
   //if (device.hasOwnProperty("thermostat_id"))   return {Id: device.thermostat_id,   IdPropertyName: "thermostat_id",    Type: DeviceType.Thermostat};
   //return {Id: device.hub_id, IdPropertyName: "hub_id", Type: DeviceType.Hub};
   
-  // TODO handle other device types
-  return DeviceStatus.Unknown;
+  return device.last_reading.connection ? DeviceStatus.On : DeviceStatus.Off;
 };
 
+// map device types to wink url
 const convertDeviceTypeToUrlType = (type: DeviceType) : string => {
-    if (type === DeviceType.LightBulb) return "light_bulbs";
-    return "";
+    return DeviceType[type].replace("_id", "s").replace("switchs", "swicthes");
 }
 
 const noop = () => {};

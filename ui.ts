@@ -97,7 +97,7 @@ export function Setup(authTokens: Auth.IAuthResult) {
        Devices.toggleDeviceState(authTokens, device).then((result) => {
             setTimeout(
                 () => {
-                    RefreshData(authTokens).then( (data) => {
+                    RefreshData(authTokens).then((data) => {
                         DrawUi(data);
                         Logger.Log.Info("refreshed data...");
                     });
