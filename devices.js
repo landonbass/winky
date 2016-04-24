@@ -30,14 +30,6 @@ class Device {
             const battery = isNaN(this.Battery) ? "" : (this.Battery) * 100 + "%";
             return [this.Name || "", DeviceType[this.Identifier.Type] || "", DeviceStatus[this.Status] || "", battery];
         };
-        this.SwapState = () => {
-            let state = "";
-            if (this.Identifier.Type === DeviceType.LightBulb) {
-                const newStatus = this.Status === DeviceStatus.On ? false : true;
-                state = `{"desired_state":{"powered":${newStatus}}}`;
-            }
-            return state;
-        };
     }
 }
 exports.Device = Device;
@@ -84,19 +76,31 @@ const getDeviceStatus = (device) => {
 };
 // map device types to wink url
 const convertDeviceTypeToUrlType = (type) => {
-    return DeviceType[type].replace("_id", "s").replace("switchs", "swicthes");
+    switch (type) {
+        case DeviceType.LightBulb: return "light_bulbs";
+        default: return "";
+    }
+};
+// generate swap state json for supported devices
+const generateSwapStateJson = (device) => {
+    let state = "";
+    if (device.Identifier.Type === DeviceType.LightBulb) {
+        const newStatus = device.Status === DeviceStatus.On ? false : true;
+        state = `{"desired_state":{"powered":${newStatus}}}`;
+    }
+    return state;
+};
+const setDeviceState = (options, deviceType, deviceId, state) => {
+    return Api.dataAsync(noop, `https://api.wink.com/${convertDeviceTypeToUrlType(deviceType)}/${deviceId}`, "PUT", { "Content-Type": "application/json", "Authorization": "Bearer " + options.AccessToken }, state);
 };
 const noop = () => { };
 exports.devicesAsync = (options) => {
     return Api.dataAsync(exports.DeviceConverter, "https://api.wink.com/users/me/wink_devices", "GET", { "Content-Type": "application/json", "Authorization": "Bearer " + options.AccessToken }, "");
 };
-exports.setDeviceState = (options, deviceType, deviceId, state) => {
-    return Api.dataAsync(noop, `https://api.wink.com/${convertDeviceTypeToUrlType(deviceType)}/${deviceId}`, "PUT", { "Content-Type": "application/json", "Authorization": "Bearer " + options.AccessToken }, state);
-};
 exports.toggleDeviceState = (options, device) => {
     // currently only work for lights
     if (device.Identifier.Type !== DeviceType.LightBulb)
         return;
-    return exports.setDeviceState(options, device.Identifier.Type, device.Id, device.SwapState());
+    return setDeviceState(options, device.Identifier.Type, device.Id, generateSwapStateJson(device));
 };
 //# sourceMappingURL=devices.js.map

@@ -27,16 +27,6 @@ export class Device implements IDevice, Ui.IDisplayFormatter {
       const battery = isNaN(this.Battery) ? "" : (this.Battery) * 100 + "%";
       return [this.Name || "", DeviceType[this.Identifier.Type] || "", DeviceStatus[this.Status] || "", battery];
     };
-    
-    public SwapState = () : string => {
-        let state = "";
-        if (this.Identifier.Type === DeviceType.LightBulb) {
-            const newStatus = this.Status === DeviceStatus.On ? false : true;
-            state = `{"desired_state":{"powered":${newStatus}}}`;
-        }  
-        
-        return state;
-    };
 }
 
 export const DeviceConverter: Api.IConvertible<Array<Device>>  = function (json) {
@@ -78,8 +68,25 @@ const getDeviceStatus = (device: any) : DeviceStatus => {
 
 // map device types to wink url
 const convertDeviceTypeToUrlType = (type: DeviceType) : string => {
-    return DeviceType[type].replace("_id", "s").replace("switchs", "swicthes");
+    switch (type) {
+        case DeviceType.LightBulb: return "light_bulbs";
+        default:                   return "";
+    }
 }
+
+// generate swap state json for supported devices
+const generateSwapStateJson = (device: Device) : string => {
+    let state = "";
+    if (device.Identifier.Type === DeviceType.LightBulb) {
+        const newStatus = device.Status === DeviceStatus.On ? false : true;
+        state = `{"desired_state":{"powered":${newStatus}}}`;
+    }  
+    return state;
+};
+
+const setDeviceState = (options: Auth.IAuthResult, deviceType: DeviceType, deviceId: string, state: string) : Promise<void> => {
+    return Api.dataAsync<void>(noop, `https://api.wink.com/${convertDeviceTypeToUrlType(deviceType)}/${deviceId}`, "PUT", {"Content-Type": "application/json", "Authorization" : "Bearer " + options.AccessToken}, state);
+};
 
 const noop = () => {};
 
@@ -87,13 +94,8 @@ export const devicesAsync = (options: Auth.IAuthResult) : Promise<Array<Device>>
     return Api.dataAsync<Array<Device>>(DeviceConverter, "https://api.wink.com/users/me/wink_devices", "GET", {"Content-Type": "application/json", "Authorization" : "Bearer " + options.AccessToken}, "");
 };
 
-export const setDeviceState = (options: Auth.IAuthResult, deviceType: DeviceType, deviceId: string, state: string) : Promise<void> => {
-    return Api.dataAsync<void>(noop, `https://api.wink.com/${convertDeviceTypeToUrlType(deviceType)}/${deviceId}`, "PUT", {"Content-Type": "application/json", "Authorization" : "Bearer " + options.AccessToken}, state);
-};
-
 export const toggleDeviceState = (options: Auth.IAuthResult, device: Device) : Promise <void> => {
     // currently only work for lights
     if (device.Identifier.Type !== DeviceType.LightBulb) return;
-    
-    return setDeviceState(options, device.Identifier.Type, device.Id, device.SwapState());
+    return setDeviceState(options, device.Identifier.Type, device.Id, generateSwapStateJson(device));
 }
