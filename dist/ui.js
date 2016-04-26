@@ -7,6 +7,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
+/*
+    a terminal ui
+*/
 const Async = require("async");
 const Blessed = require("blessed");
 const Contrib = require("blessed-contrib");

@@ -1,5 +1,9 @@
 "use strict";
 
+/*
+    a terminal ui
+*/
+
 import * as Async   from "async";
 import * as Blessed from "blessed";
 import * as Contrib from "blessed-contrib";
