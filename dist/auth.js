@@ -1,6 +1,5 @@
 "use strict";
 const Api = require("./api");
-const Logger = require("./log");
 const ReadlineSync = require("readline-sync");
 ;
 ;
@@ -12,7 +11,7 @@ exports.authenticateAsync = (options) => {
 };
 exports.getTokens = (config) => {
     return new Promise((resolve, _) => {
-        Logger.Log.Info("tokens not found in config");
+        console.log("tokens not found in config");
         const username = ReadlineSync.question("enter user name:");
         const password = ReadlineSync.question("enter password:", { hideEchoBack: true });
         const authOptions = { ApiUrl: config.ApiUrl, ClientId: config.ClientId, ClientSecret: config.ClientSecret, UserName: username, Password: password };

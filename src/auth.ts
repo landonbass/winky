@@ -19,7 +19,7 @@ export const authenticateAsync = (options: IAuthOptions) : Promise<IAuthResult> 
 
 export const getTokens = (config: Config.IConfig) : Promise<IAuthResult> => {
     return new Promise<IAuthResult> ((resolve, _) => {
-        Logger.Log.Info("tokens not found in config");
+        console.log("tokens not found in config");
         const username = ReadlineSync.question("enter user name:");
         const password = ReadlineSync.question("enter password:", {hideEchoBack: true});
         const authOptions: IAuthOptions = {ApiUrl: config.ApiUrl, ClientId: config.ClientId, ClientSecret: config.ClientSecret, UserName: username, Password: password};
