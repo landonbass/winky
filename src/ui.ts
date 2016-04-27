@@ -96,9 +96,7 @@ export function Setup(authTokens: Auth.IAuthResult) {
    deviceTable.rows.on("select", (data, index) => {
        const device : Devices.Device = devicesLookup[index];
        Logger.Log.Info(`selected device with id ${device.Id}`);
-       // TODO this does not always work
-       // api does not update immediately, so we delay
-       Devices.toggleDeviceState(authTokens, device).then((result) => {
+       Devices.toggleDeviceState(authTokens, device); /*.then((result) => {
             setTimeout(
                 () => {
                     RefreshData(authTokens).then((data) => {
@@ -106,7 +104,7 @@ export function Setup(authTokens: Auth.IAuthResult) {
                         Logger.Log.Info("refreshed data...");
                     });
                 }, 3000);         
-       });
+       });*/
    });
    
    groupTable.rows.on("select", (data, index) => {
@@ -114,7 +112,9 @@ export function Setup(authTokens: Auth.IAuthResult) {
    });
    
    robotTable.rows.on("select", (data, index) => {
-       Logger.Log.Info(`selected robot with id ${robotsLookup[index].Id}`);
+       const robot : Robots.Robot = robotsLookup[index];
+       Logger.Log.Info(`selected robot with id ${robot.Id}`);
+       Robots.toggleRobotState(authTokens, robot);
    });
 
    const DrawUi = (data) => {

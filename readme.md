@@ -15,4 +15,4 @@ Key Mapping:
 - 'r'     - set focus to robot table
 - 'g'     - set focus to group table
 - 'y'     - refresh data
-- 'enter' - will toggle device state, currently only works for lights
+- 'enter' - will toggle device state, currently only works for lights and robots, need to manually refresh with 'y' afterwards

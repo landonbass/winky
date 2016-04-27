@@ -28,4 +28,9 @@ exports.RobotConverter = function (json) {
 exports.robotsAsync = (options) => {
     return Api.dataAsync(exports.RobotConverter, "https://api.wink.com/users/me/robots", "GET", { "Content-Type": "application/json", "Authorization": "Bearer " + options.AccessToken }, "");
 };
+const noop = () => { };
+exports.toggleRobotState = (options, robot) => {
+    const newStateJson = `{"enabled":${robot.Status === RobotStatus.Enabled ? false : true}}`;
+    return Api.dataAsync(noop, `https://api.wink.com/robots/${robot.Id}`, "PUT", { "Content-Type": "application/json", "Authorization": "Bearer " + options.AccessToken }, newStateJson);
+};
 //# sourceMappingURL=robots.js.map

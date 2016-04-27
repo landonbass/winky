@@ -83,22 +83,23 @@ function Setup(authTokens) {
     deviceTable.rows.on("select", (data, index) => {
         const device = devicesLookup[index];
         Logger.Log.Info(`selected device with id ${device.Id}`);
-        // TODO this does not always work
-        // api does not update immediately, so we delay
-        Devices.toggleDeviceState(authTokens, device).then((result) => {
-            setTimeout(() => {
-                RefreshData(authTokens).then((data) => {
-                    DrawUi(data);
-                    Logger.Log.Info("refreshed data...");
-                });
-            }, 3000);
-        });
+        Devices.toggleDeviceState(authTokens, device); /*.then((result) => {
+             setTimeout(
+                 () => {
+                     RefreshData(authTokens).then((data) => {
+                         DrawUi(data);
+                         Logger.Log.Info("refreshed data...");
+                     });
+                 }, 3000);
+        });*/
     });
     groupTable.rows.on("select", (data, index) => {
         Logger.Log.Info(`selected group with id ${groupsLookup[index].Id}`);
     });
     robotTable.rows.on("select", (data, index) => {
-        Logger.Log.Info(`selected robot with id ${robotsLookup[index].Id}`);
+        const robot = robotsLookup[index];
+        Logger.Log.Info(`selected robot with id ${robot.Id}`);
+        Robots.toggleRobotState(authTokens, robot);
     });
     const DrawUi = (data) => {
         const deviceData = [];
