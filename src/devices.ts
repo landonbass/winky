@@ -4,6 +4,7 @@ import * as Api     from "./api";
 import * as Auth    from "./auth";
 import * as Request from "request";
 import * as Ui      from "./ui";
+import * as Utility from "./utility";
 
 export enum DeviceType {GarageDoor, Hub, Key, LightBulb, Lock, SensorPod, Thermostat, Unknown};
 
@@ -85,10 +86,8 @@ const generateSwapStateJson = (device: Device) : string => {
 };
 
 const setDeviceState = (options: Auth.IAuthResult, deviceType: DeviceType, deviceId: string, state: string) : Promise<void> => {
-    return Api.dataAsync<void>(noop, `https://api.wink.com/${convertDeviceTypeToUrlType(deviceType)}/${deviceId}`, "PUT", {"Content-Type": "application/json", "Authorization" : "Bearer " + options.AccessToken}, state);
+    return Api.dataAsync<void>(Utility.noop, `https://api.wink.com/${convertDeviceTypeToUrlType(deviceType)}/${deviceId}`, "PUT", {"Content-Type": "application/json", "Authorization" : "Bearer " + options.AccessToken}, state);
 };
-
-const noop = () => {};
 
 export const devicesAsync = (options: Auth.IAuthResult) : Promise<Array<Device>> => {
     return Api.dataAsync<Array<Device>>(DeviceConverter, "https://api.wink.com/users/me/wink_devices", "GET", {"Content-Type": "application/json", "Authorization" : "Bearer " + options.AccessToken}, "");

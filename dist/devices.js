@@ -1,5 +1,6 @@
 "use strict";
 const Api = require("./api");
+const Utility = require("./utility");
 (function (DeviceType) {
     DeviceType[DeviceType["GarageDoor"] = 0] = "GarageDoor";
     DeviceType[DeviceType["Hub"] = 1] = "Hub";
@@ -91,9 +92,8 @@ const generateSwapStateJson = (device) => {
     return state;
 };
 const setDeviceState = (options, deviceType, deviceId, state) => {
-    return Api.dataAsync(noop, `https://api.wink.com/${convertDeviceTypeToUrlType(deviceType)}/${deviceId}`, "PUT", { "Content-Type": "application/json", "Authorization": "Bearer " + options.AccessToken }, state);
+    return Api.dataAsync(Utility.noop, `https://api.wink.com/${convertDeviceTypeToUrlType(deviceType)}/${deviceId}`, "PUT", { "Content-Type": "application/json", "Authorization": "Bearer " + options.AccessToken }, state);
 };
-const noop = () => { };
 exports.devicesAsync = (options) => {
     return Api.dataAsync(exports.DeviceConverter, "https://api.wink.com/users/me/wink_devices", "GET", { "Content-Type": "application/json", "Authorization": "Bearer " + options.AccessToken }, "");
 };
