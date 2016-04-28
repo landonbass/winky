@@ -6,7 +6,7 @@ This is a simple application that runs in the terminal and integrates with the W
 
 ## To use:
 - Install node (version that can run es6)
-- Run 'node dist/app.js'
+- Run 'node dist/app.js' or 'npm run app'
 - If you do not have a valid config, it will prompt you for username/password  
   **note: it does not save username/password, it uses them to obtain an oauth access and refresh token and saves those**
 
