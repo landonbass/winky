@@ -1,5 +1,6 @@
 "use strict";
 const Api = require("./api");
+const Utility = require("./utility");
 ;
 (function (GroupStatus) {
     GroupStatus[GroupStatus["Off"] = 0] = "Off";
@@ -28,7 +29,20 @@ exports.GroupConverter = function (json) {
     });
     return groups;
 };
+// generate swap state json for supported devices
+const generateSwapStateJson = (group) => {
+    let state = "";
+    const newStatus = group.Status === GroupStatus.On ? false : true;
+    state = `{"desired_state":{"powered":${newStatus}}}`;
+    return state;
+};
+const setGroupState = (options, groupId, state) => {
+    return Api.dataAsync(Utility.noop, `https://api.wink.com/groups/${groupId}/activate`, "POST", { "Content-Type": "application/json", "Authorization": "Bearer " + options.AccessToken }, state);
+};
 exports.groupsAsync = (options) => {
     return Api.dataAsync(exports.GroupConverter, "https://api.wink.com/users/me/groups", "GET", { "Content-Type": "application/json", "Authorization": "Bearer " + options.AccessToken }, "");
+};
+exports.toggleGroupState = (options, group) => {
+    return setGroupState(options, group.Id, generateSwapStateJson(group));
 };
 //# sourceMappingURL=groups.js.map

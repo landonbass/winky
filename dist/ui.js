@@ -94,7 +94,9 @@ function Setup(authTokens) {
         });*/
     });
     groupTable.rows.on("select", (data, index) => {
-        Logger.Log.Info(`selected group with id ${groupsLookup[index].Id}`);
+        const group = groupsLookup[index];
+        Logger.Log.Info(`selected group with id ${group.Id}`);
+        Groups.toggleGroupState(authTokens, group);
     });
     robotTable.rows.on("select", (data, index) => {
         const robot = robotsLookup[index];

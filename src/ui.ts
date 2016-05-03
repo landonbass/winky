@@ -107,7 +107,9 @@ export function Setup(authTokens: Auth.IAuthResult) {
    });
    
    groupTable.rows.on("select", (data, index) => {
-       Logger.Log.Info(`selected group with id ${groupsLookup[index].Id}`);
+       const group : Groups.Group = groupsLookup[index];
+       Logger.Log.Info(`selected group with id ${group.Id}`);
+       Groups.toggleGroupState(authTokens, group);
    });
    
    robotTable.rows.on("select", (data, index) => {
