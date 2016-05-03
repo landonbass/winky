@@ -63,7 +63,6 @@ export function Setup(authTokens: Auth.IAuthResult) {
       , selectedFg: "green"
       , label: "Log"});
    
-   
    const uiLogger = (message) => {
        log.log(message);
    };
@@ -141,31 +140,36 @@ export function Setup(authTokens: Auth.IAuthResult) {
 }
 
 const RefreshData = (authTokens: Auth.IAuthResult) => {
-    return new Promise<[Array<Devices.Device>, Array<Robots.Robot>]>( (resolve, _) => {
-        Async.parallel([
-            async (cb) => {
+    return new Promise<[Array<Devices.Device>, Array<Robots.Robot>, Array<Groups.Group>]>( (resolve, _) => {
+        Async.parallel({
+            devices: async (cb) => {
                 Devices.devicesAsync(authTokens).then((devices) => {
                     Logger.Log.Info(`obtained ${devices.length} devices...`);
                     devicesLookup = devices;
                     cb(null, devices);
                 });
             },
-            async (cb) => {
+            robots: async (cb) => {
                 Robots.robotsAsync(authTokens).then((robots) => {
                     Logger.Log.Info(`obtained ${robots.length} robots...`);
                     robotsLookup = robots;
                     cb(null, robots);
                 });
             },
-            async (cb) => {
+            groups: async (cb) => {
                 Groups.groupsAsync(authTokens).then((groups) => {
                     Logger.Log.Info(`obtained ${groups.length} groups...`);
                     groupsLookup = groups;
                     cb(null, groups);
                 });
             }
-        ], (err, results) => {
-        resolve([results[0], results[1], results[2]]);
+        }, (err, results) => {
+            // this is to satsify ts' typing checks
+            const 
+                devices : Array<Devices.Device> = results[0]["devices"],
+                robots  : Array<Robots.Robot>   = results[0]["robots"],
+                groups  : Array<Groups.Group>   = results[0]["groups"];
+            resolve([devices, robots, groups]);
         });
     });
 };

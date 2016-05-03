@@ -7,8 +7,10 @@
         "outDir": "dist",
         "sourceRoot": "src"
     },
-     "exclude": [
+ "exclude": [
         "node_modules",
+        "typings/main.d.ts",
+        "typings/main",
         ".vscode"
     ]
 }

@@ -4,7 +4,9 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "app": "node dist/app.js"
+    "app": "node dist/app.js",
+    "pretest": "tsc test/*Test.ts --module commonjs",
+    "test": "mocha"
   },
   "author": "landon bass",
   "license": "ISC",
@@ -15,5 +17,9 @@
     "promise-ts": "^0.2.2",
     "readline-sync": "^1.4.1",
     "request": "^2.70.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5"
   }
 }

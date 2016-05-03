@@ -2,7 +2,6 @@
 
 import * as Api     from "./api";
 import * as Auth    from "./auth";
-import * as Request from "request";
 import * as Ui      from "./ui";
 import * as Utility from "./utility";
 
