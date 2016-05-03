@@ -7,11 +7,14 @@ import * as Ui      from "./ui";
 
 export interface IGroup {Id: string; Name: string; };
 
+export enum GroupStatus { Off, On, Unknown, NA};
+
 export class Group implements IGroup, Ui.IDisplayFormatter {
-    public Id    : string;
-    public Name  : string;
+    public Id     : string;
+    public Name   : string;
+    public Status : GroupStatus;
     public ToDisplayArray = () : Array<string> => {
-        return [this.Name];
+        return [this.Name, GroupStatus[this.Status]];
     };
 }
 
@@ -21,6 +24,7 @@ export const GroupConverter: Api.IConvertible<Array<Group>> = function (json) {
         const group = new Group();
         group.Id   = g.group_id;
         group.Name = g.name;
+        group.Status = g.reading_aggregation.powered.or === true || g.reading_aggregation.powered.and === true ? GroupStatus.On : GroupStatus.Off;
         groups.push(group);
     });
     return groups;

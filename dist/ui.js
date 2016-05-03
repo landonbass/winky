@@ -41,7 +41,7 @@ function Setup(authTokens) {
         label: "Groups - 'g' to focus",
         border: { type: "line", fg: "cyan" },
         columnSpacing: 1,
-        columnWidth: [20]
+        columnWidth: [20, 7]
     });
     const robotTable = grid.set(0, 8, 9, 12, Contrib.table, {
         keys: true,
@@ -116,7 +116,7 @@ function Setup(authTokens) {
         data[2].forEach((group) => {
             groupData.push(group.ToDisplayArray());
         });
-        groupTable.setData({ headers: ["Name"], data: groupData });
+        groupTable.setData({ headers: ["Name", "Status"], data: groupData });
         screen.render();
     };
     RefreshData(authTokens).then((data) => {

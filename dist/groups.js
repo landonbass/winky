@@ -1,10 +1,18 @@
 "use strict";
 const Api = require("./api");
 ;
+(function (GroupStatus) {
+    GroupStatus[GroupStatus["Off"] = 0] = "Off";
+    GroupStatus[GroupStatus["On"] = 1] = "On";
+    GroupStatus[GroupStatus["Unknown"] = 2] = "Unknown";
+    GroupStatus[GroupStatus["NA"] = 3] = "NA";
+})(exports.GroupStatus || (exports.GroupStatus = {}));
+var GroupStatus = exports.GroupStatus;
+;
 class Group {
     constructor() {
         this.ToDisplayArray = () => {
-            return [this.Name];
+            return [this.Name, GroupStatus[this.Status]];
         };
     }
 }
@@ -15,6 +23,7 @@ exports.GroupConverter = function (json) {
         const group = new Group();
         group.Id = g.group_id;
         group.Name = g.name;
+        group.Status = g.reading_aggregation.powered.or === true || g.reading_aggregation.powered.and === true ? GroupStatus.On : GroupStatus.Off;
         groups.push(group);
     });
     return groups;
