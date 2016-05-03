@@ -4,6 +4,7 @@ import * as Auth     from "./auth";
 import * as Config   from "./config";
 import * as UI       from "./ui";
 
+
 // this is the main entry point to the application
 // it validates that it has tokens and then provisions the UI
 async function init() {

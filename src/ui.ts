@@ -163,12 +163,12 @@ const RefreshData = (authTokens: Auth.IAuthResult) => {
                     cb(null, groups);
                 });
             }
-        }, (err, results) => {
+    }, (err, results) => {
             // this is to satsify ts' typing checks
             const 
-                devices : Array<Devices.Device> = results[0]["devices"],
-                robots  : Array<Robots.Robot>   = results[0]["robots"],
-                groups  : Array<Groups.Group>   = results[0]["groups"];
+                devices : Array<Devices.Device> = results["devices"],
+                robots  : Array<Robots.Robot>   = results["robots"],
+                groups  : Array<Groups.Group>   = results["groups"];
             resolve([devices, robots, groups]);
         });
     });

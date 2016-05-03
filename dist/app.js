@@ -7,7 +7,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-/// <reference path="../typings/promise/promise.d.ts" />
 const Auth = require("./auth");
 const Config = require("./config");
 const UI = require("./ui");

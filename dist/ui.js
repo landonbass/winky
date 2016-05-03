@@ -126,30 +126,32 @@ function Setup(authTokens) {
 exports.Setup = Setup;
 const RefreshData = (authTokens) => {
     return new Promise((resolve, _) => {
-        Async.parallel([
-                (cb) => __awaiter(this, void 0, void 0, function* () {
+        Async.parallel({
+            devices: (cb) => __awaiter(this, void 0, void 0, function* () {
                 Devices.devicesAsync(authTokens).then((devices) => {
                     Logger.Log.Info(`obtained ${devices.length} devices...`);
                     devicesLookup = devices;
                     cb(null, devices);
                 });
             }),
-                (cb) => __awaiter(this, void 0, void 0, function* () {
+            robots: (cb) => __awaiter(this, void 0, void 0, function* () {
                 Robots.robotsAsync(authTokens).then((robots) => {
                     Logger.Log.Info(`obtained ${robots.length} robots...`);
                     robotsLookup = robots;
                     cb(null, robots);
                 });
             }),
-                (cb) => __awaiter(this, void 0, void 0, function* () {
+            groups: (cb) => __awaiter(this, void 0, void 0, function* () {
                 Groups.groupsAsync(authTokens).then((groups) => {
                     Logger.Log.Info(`obtained ${groups.length} groups...`);
                     groupsLookup = groups;
                     cb(null, groups);
                 });
             })
-        ], (err, results) => {
-            resolve([results[0], results[1], results[2]]);
+        }, (err, results) => {
+            // this is to satsify ts' typing checks
+            const devices = results["devices"], robots = results["robots"], groups = results["groups"];
+            resolve([devices, robots, groups]);
         });
     });
 };
