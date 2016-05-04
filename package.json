@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "app": "node dist/app.js",
-    "pretest": "tsc test/*Test.ts --module commonjs",
+    "pretest": "tsc test/*Test.ts --module commonjs --target es6",
     "test": "mocha"
   },
   "author": "landon bass",
