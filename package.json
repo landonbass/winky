@@ -6,7 +6,7 @@
   "scripts": {
     "app": "node dist/app.js",
     "pretest": "tsc test/*Test.ts --module commonjs --target es6",
-    "test": "mocha"
+    "test": "node ./node_modules/.bin/istanbul cover _mocha"
   },
   "author": "landon bass",
   "license": "ISC",
@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "istanbul": "^0.4.3",
     "mocha": "^2.4.5"
   }
 }
