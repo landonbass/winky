@@ -7,6 +7,7 @@ function LogEmitter() {
     emitter.call(this);
 }
 
+
 util.inherits(LogEmitter, emitter);
 
 export const logEmitter = new LogEmitter();
