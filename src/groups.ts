@@ -24,11 +24,19 @@ export const GroupConverter: Api.IConvertible<Array<Group>> = function (json) {
         const group = new Group();
         group.Id   = g.group_id;
         group.Name = g.name;
-        group.Status = g.reading_aggregation.powered.or === true || g.reading_aggregation.powered.and === true ? GroupStatus.On : GroupStatus.Off;
+        group.Status = getAggregationReading(g);
         groups.push(group);
     });
     return groups;
 };
+
+const getAggregationReading = (json: Object) : GroupStatus => {
+    if (json["reading_aggregation"]["powered"] === undefined) return GroupStatus.NA;
+    const value = json["reading_aggregation"]["powered"];
+    if (value["or"] === undefined || value === undefined) return GroupStatus.Unknown;
+    
+    return value["or"] === true || value === true ? GroupStatus.On : GroupStatus.Off;
+}
 
 // generate swap state json for supported devices
 const generateSwapStateJson = (group: Group) : string => {

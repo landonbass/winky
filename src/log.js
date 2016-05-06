@@ -1,5 +1,5 @@
 "use strict";
-var emitter = require("events"), util = require("util");
+const emitter = require("events"), util = require("util");
 function LogEmitter() {
     emitter.call(this);
 }
@@ -11,15 +11,12 @@ exports.logEmitter = new LogEmitter();
     LogLevel[LogLevel["Error"] = 2] = "Error";
 })(exports.LogLevel || (exports.LogLevel = {}));
 var LogLevel = exports.LogLevel;
-var Logger = (function () {
-    function Logger() {
+class Logger {
+    Info(message) { this.log(LogLevel.Info, message); }
+    Warn(message) { this.log(LogLevel.Warn, message); }
+    Error(message) { this.log(LogLevel.Error, message); }
+    log(level, message) {
+        exports.logEmitter.emit("log", `${(new Date).toISOString()} - ${LogLevel[level]} - ${message}`);
     }
-    Logger.prototype.Info = function (message) { this.log(LogLevel.Info, message); };
-    Logger.prototype.Warn = function (message) { this.log(LogLevel.Warn, message); };
-    Logger.prototype.Error = function (message) { this.log(LogLevel.Error, message); };
-    Logger.prototype.log = function (level, message) {
-        exports.logEmitter.emit("log", (new Date).toISOString() + " - " + LogLevel[level] + " - " + message);
-    };
-    return Logger;
-}());
+}
 exports.Log = new Logger();
