@@ -18,7 +18,7 @@ describe("Config", () => {
     describe("#path", () => {
         it("should crate config.json if it does not exist", () => {
             Config.data().then((data) => {
-                Chai.assert.equal(fileExists(Path.join(__dirname, "..", "config1.json")), true, "config.json should be created if it does not exist");
+                Chai.assert.equal(fileExists(Path.join(__dirname, "..", "config.json")), true, "config.json should be created if it does not exist");
             });
         });
     });

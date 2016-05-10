@@ -16,3 +16,6 @@ Key Mapping:
 - 'g'     - set focus to group table
 - 'y'     - refresh data
 - 'enter' - will toggle device state, currently only works for lights, groups, and robots, need to manually refresh with 'y' afterwards
+
+##Screenshot
+![Main Screen](/img/homescreen.png)
