@@ -21,14 +21,18 @@ export class Group implements IGroup, Ui.IDisplayFormatter {
 export const GroupConverter: Api.IConvertible<Array<Group>> = function (json) {
     const groups = new Array<Group>();
     json.forEach((g) => {
-        const group = new Group();
-        group.Id   = g.group_id;
-        group.Name = g.name;
-        group.Status = getAggregationReading(g);
-        groups.push(group);
+        groups.push(ParseGroupFromJson(g));
     });
     return groups;
 };
+
+const ParseGroupFromJson = (json: Object) : Group => {
+    const group = new Group();
+    group.Id   = json["group_id"];
+    group.Name = json["name"];
+    group.Status = getAggregationReading(json);
+    return group;
+}
 
 const getAggregationReading = (json: Object) : GroupStatus => {
     if (json["reading_aggregation"]["powered"] === undefined) return GroupStatus.NA;
