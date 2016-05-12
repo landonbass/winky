@@ -11,3 +11,17 @@ describe("Noop", () => {
         });
     });
 });
+describe("IsUndefinedNullOrEmpty", () => {
+    describe("Undefined", () => {
+        Chai.assert.equal(true, Utility.isNullUndefinedEmpty(undefined));
+    });
+    describe("Null", () => {
+        Chai.assert.equal(true, Utility.isNullUndefinedEmpty(null));
+    });
+    describe("Empty", () => {
+        Chai.assert.equal(true, Utility.isNullUndefinedEmpty(""));
+    });
+    describe("Value", () => {
+        Chai.assert.equal(false, Utility.isNullUndefinedEmpty(true));
+    });
+});

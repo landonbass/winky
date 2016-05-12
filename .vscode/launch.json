@@ -6,7 +6,8 @@
 			"type": "node",
 			"request": "attach",
 			"stopOnEntry": false,
-			"sourceMaps": true
+			"sourceMaps": true,
+			"timeout": 30000
 		}
 	]
 }
