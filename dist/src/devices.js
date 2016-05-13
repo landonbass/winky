@@ -37,16 +37,19 @@ exports.Device = Device;
 exports.DeviceConverter = function (json) {
     const devices = new Array();
     json.forEach((d) => {
-        const device = new Device();
-        device.Identifier = getDeviceIdentifier(d);
-        device.Status = getDeviceStatus(d);
-        device.Id = device.Identifier.Id;
-        device.Name = d.name;
-        device.Model = d.model_name;
-        device.Battery = d.last_reading.battery;
-        devices.push(device);
+        devices.push(ParseDeviceFromJson(d));
     });
     return devices;
+};
+const ParseDeviceFromJson = (json) => {
+    const device = new Device();
+    device.Identifier = getDeviceIdentifier(json);
+    device.Status = getDeviceStatus(json);
+    device.Id = device.Identifier.Id;
+    device.Name = json["name"];
+    device.Model = json["model_name"];
+    device.Battery = json["last_reading.battery"];
+    return device;
 };
 const getDeviceIdentifier = (device) => {
     if (device.hasOwnProperty("garage_door_id"))

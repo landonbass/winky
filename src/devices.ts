@@ -32,17 +32,21 @@ export class Device implements IDevice, Ui.IDisplayFormatter {
 export const DeviceConverter: Api.IConvertible<Array<Device>>  = function (json) {
     const devices = new Array<Device>();
     json.forEach((d) => {
-        const device      = new Device();
-        device.Identifier = getDeviceIdentifier(d);
-        device.Status     = getDeviceStatus(d);
-        device.Id         = device.Identifier.Id;
-        device.Name       = d.name;
-        device.Model      = d.model_name;
-        device.Battery    = d.last_reading.battery;
-        devices.push(device);
+        devices.push(ParseDeviceFromJson(d));
     });
     return devices;
 };
+
+const ParseDeviceFromJson = (json: Object) : Device => {
+    const device      = new Device();
+    device.Identifier = getDeviceIdentifier(json);
+    device.Status     = getDeviceStatus(json);
+    device.Id         = device.Identifier.Id;
+    device.Name       = json["name"];
+    device.Model      = json["model_name"];
+    device.Battery    = json["last_reading.battery"];
+    return device;
+}
 
 const getDeviceIdentifier = (device: any) : DeviceIdentifier => {
   if (device.hasOwnProperty("garage_door_id"))  return {Id: device.garage_door_id,  IdPropertyName: "garage_door_id",   Type: DeviceType.GarageDoor};
