@@ -18,13 +18,16 @@ exports.Robot = Robot;
 exports.RobotConverter = function (json) {
     const robots = new Array();
     json.forEach((r) => {
-        const robot = new Robot();
-        robot.Id = r.robot_id;
-        robot.Name = r.name;
-        robot.Status = r.enabled === true ? RobotStatus.Enabled : RobotStatus.Disabled;
-        robots.push(robot);
+        robots.push(ParseRobotFromJson(r));
     });
     return robots;
+};
+const ParseRobotFromJson = (json) => {
+    const robot = new Robot();
+    robot.Id = json["robot_id"];
+    robot.Name = json["name"];
+    robot.Status = json["enabled"] === true ? RobotStatus.Enabled : RobotStatus.Disabled;
+    return robot;
 };
 exports.robotsAsync = (options) => {
     return Api.dataAsync(exports.RobotConverter, "https://api.wink.com/users/me/robots", "GET", { "Content-Type": "application/json", "Authorization": "Bearer " + options.AccessToken }, "");

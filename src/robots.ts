@@ -24,13 +24,17 @@ export class Robot implements IRobot, Ui.IDisplayFormatter {
 export const RobotConverter: Api.IConvertible<Array<Robot>> = function (json) {
     const robots = new Array<Robot>();
     json.forEach((r) => {
-        const robot = new Robot();
-        robot.Id = r.robot_id;
-        robot.Name = r.name;
-        robot.Status = r.enabled === true ? RobotStatus.Enabled : RobotStatus.Disabled;
-        robots.push(robot);
+        robots.push(ParseRobotFromJson(r));
     });
     return robots;
+};
+
+const ParseRobotFromJson = (json: Object) : Robot => {
+    const robot = new Robot();
+    robot.Id = json["robot_id"];
+    robot.Name = json["name"];
+    robot.Status = json["enabled"] === true ? RobotStatus.Enabled : RobotStatus.Disabled;
+    return robot; 
 };
 
 export const robotsAsync = (options: Auth.IAuthResult) : Promise<Array<Robot>> => {
