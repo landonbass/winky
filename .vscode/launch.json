@@ -2,12 +2,14 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Launch",
+			"name": "Attach",
 			"type": "node",
 			"request": "attach",
 			"stopOnEntry": false,
 			"sourceMaps": true,
-			"timeout": 30000
+			"outDir": "${workspaceRoot}/dist",
+			"timeout": 30000,
+			"port": 5858
 		}
 	]
 }

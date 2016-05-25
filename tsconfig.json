@@ -4,7 +4,7 @@
         "module": "commonjs",
         "sourceMap": true,
         "watch": true,
-        "outDir": "dist",
+        "outDir": "./dist",
         "sourceRoot": "src"
     },
  "exclude": [

@@ -6,7 +6,8 @@
   "scripts": {
     "app": "node dist/app.js",
     "pretest": "tsc test/*Test.ts --module commonjs --target es6",
-    "test": "node ./node_modules/.bin/istanbul cover _mocha"
+    "test": "node ./node_modules/.bin/istanbul cover _mocha",
+    "debug": "node --debug dist/app.js"
   },
   "author": "landon bass",
   "license": "ISC",
